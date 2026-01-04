@@ -1,0 +1,101 @@
+<!-- sections/page-leaflabot-app.liquid -->
+<!-- v4.0.0: 🎯 会員制度強化 + 植物数制限 + 季節対応版 -->
+
+{%- comment -%} ===== 共通ヘッダーを読み込み ===== {%- endcomment -%}
+{% render 'botareco-header' %}
+
+{%- comment -%} ===== BotaReco メインコンテンツエリア ===== {%- endcomment -%}
+<div id="leaflabot-root"></div>
+
+{%- comment -%} 🎨 プリローダー {%- endcomment -%}
+<div id="leaflabot-preloader">
+  <div class="preloader-plant">　</div>
+  <div class="membership-tiers-enhanced">
+    <div class="tier-enhanced non-member">
+      🚫 非会員: 体験のみ
+      <div class="tier-features">基本相談機能のみ利用可能</div>
+    </div>
+    <div class="tier-enhanced free-member">
+      🆓 無料会員: 記録保存 + 植物20個まで
+      <div class="tier-features">育成記録・ケア記録管理 (ケア通知なし)</div>
+    </div>
+    <div class="tier-enhanced paid-member">
+      💎 有料会員: 全機能 + 植物50個まで
+      <div class="tier-features">季節対応ケア通知 + AI画像生成対応</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// プリローダーの制御
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    const preloader = document.getElementById('leaflabot-preloader');
+    if (preloader) {
+      preloader.classList.add('hidden');
+      setTimeout(function() {
+        preloader.style.display = 'none';
+      }, 500);
+    }
+  }, 2000);
+});
+</script>
+
+{%- comment -%} 📊 エラー追跡・パフォーマンス監視 {%- endcomment -%}
+<script>
+window.addEventListener('error', function(e) {
+  console.error('🚨 Leaflabot Error:', {
+    message: e.message,
+    filename: e.filename,
+    lineno: e.lineno,
+    colno: e.colno,
+    error: e.error
+  });
+});
+
+window.addEventListener('load', function() {
+  if (window.performance && window.performance.timing) {
+    const loadTime = window.performance.timing.loadEventEnd - window.performance.timing.navigationStart;
+    if (loadTime > 0) {
+      console.log('⚡ Leaflabot Load Time:', loadTime + 'ms');
+    }
+  }
+});
+
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+if (isMobile) {
+  document.documentElement.classList.add('mobile-device');
+}
+</script>
+
+{%- comment -%} 🔧 デバッグ情報（開発環境のみ） {%- endcomment -%}
+{% if shop.domain contains 'myshopify.com' %}
+<script>
+console.log('🌱 LEAFLA Development Mode');
+console.log('Customer:', window.LEAFLA.customer);
+console.log('Entitlement:', window.LEAFLA.entitlement);
+console.log('Features:', window.LEAFLA.features);
+console.log('Config:', window.LEAFLA.config);
+</script>
+{% endif %}
+
+{%- comment -%} 📋 スキーママークアップ {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "BotaReco（ボタレコ）",
+  "description": "強化版会員制度で植物ケアを季節対応サポート",
+  "url": "{{ page.url | prepend: shop.url }}",
+  "applicationCategory": "LifestyleApplication",
+  "operatingSystem": "Web"
+}
+</script>
+
+{% schema %}
+{
+  "name": "LEAFLAアプリv4.0.0",
+  "tag": "section",
+  "class": "section-leaflabot-app"
+}
+{% endschema %}

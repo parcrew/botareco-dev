@@ -1,0 +1,12 @@
+{
+  "name": "Leaflabot",
+  "short_name": "Leaflabot",
+  "start_url": "/pages/leaflabot",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

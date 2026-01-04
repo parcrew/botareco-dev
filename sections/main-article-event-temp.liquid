@@ -1,0 +1,758 @@
+{{ 'section-blog-post.css' | asset_url | stylesheet_tag }}
+
+<article class="article-template mgt50 ">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when '@app' -%}
+        <div class="page-width page-width--narrow">
+          {% render block %}
+        </div>
+
+      {%- when 'content' -%}
+        <div
+          class="article-event-template__content{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          {{ article.content }}
+
+<!--start rld-->
+<!-- 共通のHTML -->
+<div class="common-content">
+    <!-- すべての記事に共通して表示される内容 -->
+</div>
+
+        </div>
+
+      {%- when 'share' -%}
+        <div
+          class="article-template__th--narrow{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {{ block.shopify_attributes }}
+        >
+          {% assign share_url = request.origin | append: article.url %}
+          {% render 'share-button', block: block, share_link: share_url %}
+        </div>
+    {%- endcase -%}
+  {%- endfor -%}
+
+  <div class="article-template__back element-margin-top center{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    <a href="{{ blog.url }}" class="article-template__link link animate-arrow">
+      <span class="icon-wrap">{% render 'icon-arrow' %}</span>
+      {{ 'blogs.article.back_to_blog' | t: title: blog.title | escape }}
+    </a>
+  </div>
+  {%- if blog.comments_enabled? -%}
+    <div class="article-template__comment-wrapper background-secondary">
+      <div
+        id="comments"
+        class="page-width page-width--narrow{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+      >
+        {%- if article.comments_count > 0 -%}
+          {%- assign anchorId = '#Comments-' | append: article.id -%}
+
+          <h2 id="Comments-{{ article.id }}" tabindex="-1">
+            {{ 'blogs.article.comments' | t: count: article.comments_count }}
+          </h2>
+          {% paginate article.comments by 5 %}
+            <div class="article-template__comments">
+              {%- if comment.status == 'pending' and comment.content -%}
+                <article id="{{ comment.id }}" class="article-template__comments-comment">
+                  {{ comment.content }}
+                  <footer class="right">
+                    <span class="circle-divider caption-with-letter-spacing">{{ comment.author }}</span>
+                  </footer>
+                </article>
+              {%- endif -%}
+
+              {%- for comment in article.comments -%}
+                <article id="{{ comment.id }}" class="article-template__comments-comment">
+                  {{ comment.content }}
+                  <footer class="right">
+                    <span class="circle-divider caption-with-letter-spacing">{{ comment.author }}</span
+                    ><span class="caption-with-letter-spacing">
+                      {{- comment.created_at | time_tag: format: 'date' -}}
+                    </span>
+                  </footer>
+                </article>
+              {%- endfor -%}
+              {% render 'pagination', paginate: paginate, anchor: anchorId %}
+            </div>
+          {% endpaginate %}
+        {%- endif -%}
+        {% form 'new_comment', article %}
+          {%- liquid
+            assign post_message = 'blogs.article.success'
+            if blog.moderated? and comment.status == 'unapproved'
+              assign post_message = 'blogs.article.success_moderated'
+            endif
+          -%}
+          <h2>{{ 'blogs.article.comment_form_title' | t }}</h2>
+          {%- if form.errors -%}
+            <div class="form__message" role="alert">
+              <h3 class="form-status caption-large text-body" tabindex="-1" autofocus>
+                {% render 'icon-error' %}
+                {{ 'templates.contact.form.error_heading' | t }}
+              </h3>
+            </div>
+            <ul class="form-status-list caption-large">
+              {%- for field in form.errors -%}
+                <li>
+                  <a href="#CommentForm-{{ field }}" class="link">
+                    {%- if form.errors.translated_fields[field] contains 'author' -%}
+                      {{ 'blogs.article.name' | t }}
+                    {%- elsif form.errors.translated_fields[field] contains 'body' -%}
+                      {{ 'blogs.article.message' | t }}
+                    {%- else -%}
+                      {{ form.errors.translated_fields[field] }}
+                    {%- endif -%}
+                    {{ form.errors.messages[field] }}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- elsif form.posted_successfully? -%}
+            <div class="form-status-list form__message" role="status">
+              <h3 class="form-status" tabindex="-1" autofocus>
+                {% render 'icon-success' %}
+                {{ post_message | t }}
+              </h3>
+            </div>
+          {%- endif -%}
+
+          <div
+            {% if blog.moderated? == false %}
+              class="article-template__comments-fields"
+            {% endif %}
+          >
+            <div class="article-template__comment-fields">
+              <div class="field field--with-error">
+                <input
+                  type="text"
+                  name="comment[author]"
+                  id="CommentForm-author"
+                  class="field__input"
+                  autocomplete="name"
+                  value="{{ form.author }}"
+                  aria-required="true"
+                  required
+                  {% if form.errors contains 'author' %}
+                    aria-invalid="true"
+                    aria-describedby="CommentForm-author-error"
+                  {% endif %}
+                  placeholder="{{ 'blogs.article.name' | t }}"
+                >
+                <label class="field__label" for="CommentForm-author">
+                  {{- 'blogs.article.name' | t }}
+                  <span aria-hidden="true">*</span></label
+                >
+                {%- if form.errors contains 'author' -%}
+                  <small id="CommentForm-author-error">
+                    <span class="form__message">
+                      {%- render 'icon-error' -%}
+                      {{- 'blogs.article.name' | t }}
+                      {{ form.errors.messages.author }}.</span
+                    >
+                  </small>
+                {%- endif -%}
+              </div>
+              <div class="field field--with-error">
+                <input
+                  type="email"
+                  name="comment[email]"
+                  id="CommentForm-email"
+                  autocomplete="email"
+                  class="field__input"
+                  value="{{ form.email }}"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  aria-required="true"
+                  required
+                  {% if form.errors contains 'email' %}
+                    aria-invalid="true"
+                    aria-describedby="CommentForm-email-error"
+                  {% endif %}
+                  placeholder="{{ 'blogs.article.email' | t }}"
+                >
+                <label class="field__label" for="CommentForm-email">
+                  {{- 'blogs.article.email' | t }}
+                  <span aria-hidden="true">*</span></label
+                >
+                {%- if form.errors contains 'email' -%}
+                  <small id="CommentForm-email-error">
+                    <span class="form__message">
+                      {%- render 'icon-error' -%}
+                      {{- 'blogs.article.email' | t }}
+                      {{ form.errors.messages.email }}.</span
+                    >
+                  </small>
+                {%- endif -%}
+              </div>
+            </div>
+            <div class="field field--with-error">
+              <textarea
+                rows="5"
+                name="comment[body]"
+                id="CommentForm-body"
+                class="text-area field__input"
+                aria-required="true"
+                required
+                {% if form.errors contains 'body' %}
+                  aria-invalid="true"
+                  aria-describedby="CommentForm-body-error"
+                {% endif %}
+                placeholder="{{ 'blogs.article.message' | t }}"
+              >{{ form.body }}</textarea>
+              <label class="form__label field__label" for="CommentForm-body">
+                {{- 'blogs.article.message' | t }}
+                <span aria-hidden="true">*</span></label
+              >
+            </div>
+            {%- if form.errors contains 'body' -%}
+              <small id="CommentForm-body-error">
+                <span class="form__message">
+                  {%- render 'icon-error' -%}
+                  {{- 'blogs.article.message' | t }}
+                  {{ form.errors.messages.body }}.</span
+                >
+              </small>
+            {%- endif -%}
+          </div>
+          {%- if blog.moderated? -%}
+            <p class="article-template__comment-warning caption">{{ 'blogs.article.moderated' | t }}</p>
+          {%- endif -%}
+          <input type="submit" class="button" value="{{ 'blogs.article.post' | t }}">
+        {% endform %}
+      </div>
+    </div>
+  {%- endif -%}
+</article>
+
+<script type="application/ld+json">
+  {{ article | structured_data }}
+</script>
+
+<script>
+const DAYS = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+// イベントの日付を取得する関数
+function getEventDates() {
+  const eventSections = document.querySelectorAll('.event-section');
+  const eventDates = [];
+
+  eventSections.forEach(section => {
+    const heading = section.querySelector('h2');
+    if (heading) {
+      const headingText = heading.textContent;
+      const matches = headingText.match(/[A-Z]{3}\s+(\d+)\s+([A-Z]{3})/i);
+      if (matches) {
+        const day = parseInt(matches[1]);
+        const monthText = matches[2];
+        const monthIndex = MONTHS.findIndex(m => 
+          monthText.toUpperCase().includes(m) || m.includes(monthText.toUpperCase())
+        );
+        if (monthIndex !== -1) {
+          const today = new Date();
+          const eventDate = new Date(today.getFullYear(), monthIndex, day);
+          eventDates.push({
+            date: eventDate,
+            id: section.id,
+            formattedDate: `${day.toString().padStart(2, '0')}-${monthIndex + 1}-${today.getFullYear()}`
+          });
+        }
+      }
+    }
+  });
+  return eventDates;
+}
+
+// 日付ボタンを生成する関数
+function generateDates() {
+  const dateScroll = document.getElementById('date-scroll');
+  if (!dateScroll) return;
+  
+  dateScroll.innerHTML = '';
+  const eventDates = getEventDates();
+  eventDates.sort((a, b) => a.date - b.date);
+  if (eventDates.length === 0) return;
+
+  let currentMonth = null;
+
+  eventDates.forEach((eventInfo, index) => {
+    const date = eventInfo.date;
+    const day = date.getDate();
+    const month = date.getMonth();
+    const dayOfWeek = DAYS[date.getDay()];
+    const monthStr = MONTHS[month];
+
+    if (currentMonth !== month) {
+      currentMonth = month;
+      const monthElement = document.createElement('div');
+      monthElement.className = 'month-indicator';
+      monthElement.textContent = monthStr;
+      dateScroll.appendChild(monthElement);
+    }
+
+    const dateBtn = document.createElement('button');
+    dateBtn.className = 'date-btn';
+    dateBtn.setAttribute('data-target', eventInfo.id);
+    if (index === 0) dateBtn.classList.add('active');
+
+    dateBtn.innerHTML = `
+      <span class="date-yobi">${dayOfWeek}</span>
+      <span class="date-day">${day.toString().padStart(2, '0')}</span>
+      <span class="date-mt">${monthStr}</span>
+    `;
+
+dateBtn.addEventListener('click', function () {
+  document.querySelectorAll('.date-btn').forEach(btn => btn.classList.remove('active'));
+  this.classList.add('active');
+  const targetId = this.getAttribute('data-target');
+  const targetSection = document.getElementById(targetId);
+  
+  if (targetSection) {
+    // スクロール位置を調整する
+    const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset;
+    const offsetPosition = targetPosition - 150; // 50pxの余白を追加
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
+});
+
+    dateScroll.appendChild(dateBtn);
+  });
+}
+
+// セクションIDを更新する関数
+function updateExistingEventSections() {
+  const today = new Date();
+  const eventSections = document.querySelectorAll('.event-section');
+
+  eventSections.forEach(section => {
+    const heading = section.querySelector('h2');
+    if (heading) {
+      const headingText = heading.textContent.replace(/　/g, ' ').trim();
+      const matches = headingText.match(/(?:📆\s*)?([A-Z]{3})\s+(\d{1,2})\s+([A-Z]{3})/i);
+      if (matches) {
+        const day = parseInt(matches[2]);
+        const monthText = matches[3].toUpperCase();
+        const monthIndex = MONTHS.findIndex(m => m === monthText);
+        if (monthIndex !== -1) {
+          const newId = `date-${today.getFullYear()}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          section.id = newId;
+        }
+      }
+    }
+  });
+}
+
+// リージョン情報を抽出する関数
+function detectRegion() {
+  // 1. まず、コンテナの data-region 属性を確認
+  const eventContainer = document.getElementById('event-container');
+  if (eventContainer && eventContainer.dataset.region) {
+    const region = eventContainer.dataset.region;
+    console.log("コンテナから地域を検出:", region);
+    return region;
+  }
+
+  // 2. コンテナに属性がなければ、イベントカードから検出
+  const eventCards = document.querySelectorAll('.event-card');
+  const regions = new Map();
+
+  eventCards.forEach(card => {
+    const locationEl = card.querySelector('.event-location');
+    if (locationEl && locationEl.textContent) {
+      const locationText = locationEl.textContent;
+      
+      // 地域名の抽出方法1: スラッシュで分割
+      if (locationText.includes('🗾') && locationText.includes('/')) {
+        const parts = locationText.split('/');
+        const regionPart = parts[0].replace('🗾', '').trim();
+        if (regionPart) {
+          console.log("スラッシュ分割で地域を検出:", regionPart);
+          regions.set(regionPart, (regions.get(regionPart) || 0) + 1);
+        }
+      } 
+      // 地域名の抽出方法2: 単純に🗾の後のテキストを取得
+      else if (locationText.includes('🗾')) {
+        const text = locationText.split('🗾')[1].trim();
+        if (text) {
+          const firstWord = text.split(' ')[0].trim();
+          if (firstWord) {
+            console.log("🗾の後のテキストから地域を検出:", firstWord);
+            regions.set(firstWord, (regions.get(firstWord) || 0) + 1);
+          }
+        }
+      }
+    }
+  });
+
+  // デバッグ用
+  console.log("検出された地域一覧:", Array.from(regions.entries()));
+
+  // 3. 最も多く出現した地域を返す
+  let maxRegion = 'ALL';
+  let maxCount = 0;
+
+  regions.forEach((count, region) => {
+    if (count > maxCount) {
+      maxCount = count;
+      maxRegion = region;
+    }
+  });
+
+  return maxRegion;
+}
+
+// ヘッダーのリージョン表示を更新する関数
+function updateHeaderRegion(region) {
+  const selectedArea = document.getElementById('selected-area');
+  if (selectedArea) {
+    console.log("ヘッダーの地域表示を更新:", region);
+    selectedArea.textContent = region;
+    
+    // header要素のdata-current-area属性も更新
+    const header = document.querySelector('.ev-header-sty');
+    if (header) {
+      header.setAttribute('data-current-area', region);
+    }
+  }
+}
+
+// 地域を設定して表示する関数
+function setRegion() {
+  const region = detectRegion();
+  console.log("最終決定された地域:", region);
+  updateHeaderRegion(region);
+}
+
+// エリア選択機能
+function selectArea(area) {
+  console.log("エリア選択:", area);
+  updateHeaderRegion(area);
+  closeAreaPopup();
+  //return false;  リンクのデフォルト動作を防止
+}
+
+// ポップアップ表示関数
+function openAreaPopup() {
+  const popup = document.getElementById('area-popup');
+  const overlay = document.getElementById('ev-overlay');
+
+  if (popup && overlay) {
+    popup.style.display = 'block';
+    overlay.style.display = 'block';
+    document.body.classList.add('popup-open');
+    backToMainMenu();
+    centerPopup();
+  }
+}
+
+// ポップアップを中央に配置する関数
+function centerPopup() {
+  const popup = document.getElementById('area-popup');
+  if (!popup || popup.style.display === 'none') return;
+
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const viewportHeight = window.innerHeight;
+  const popupRect = popup.getBoundingClientRect();
+  const popupHeight = popupRect.height;
+  const headerOffset = 100; // 調整値
+
+  const top = scrollTop + (viewportHeight - popupHeight) / 2 - headerOffset;
+
+  popup.style.left = '50%';
+  popup.style.transform = 'translateX(-50%)';
+  popup.style.top = `${Math.max(scrollTop + 20, top)}px`;
+}
+
+// ポップアップを閉じる関数
+function closeAreaPopup() {
+  const popup = document.getElementById('area-popup');
+  const overlay = document.getElementById('ev-overlay');
+  
+  if (popup && overlay) {
+    popup.style.display = 'none';
+    overlay.style.display = 'none';
+    document.body.classList.remove('popup-open');
+    setTimeout(backToMainMenu, 300);
+  }
+}
+
+// メインメニューに戻る関数
+function backToMainMenu() {
+  document.querySelectorAll('.region-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.region-list button').forEach(button => button.classList.remove('active'));
+  
+  const mainMenu = document.getElementById('main-menu');
+  if (mainMenu) {
+    mainMenu.classList.remove('hidden');
+  }
+  
+  document.querySelectorAll('.back-to-menu').forEach(button => {
+    button.style.display = 'none';
+  });
+}
+
+// リージョンを表示する関数
+function showRegion(region) {
+  const mainMenu = document.getElementById('main-menu');
+  const regionElement = document.getElementById(region);
+  
+  if (mainMenu) {
+    mainMenu.classList.add('hidden');
+  }
+  
+  document.querySelectorAll('.region-content').forEach(el => el.classList.remove('active'));
+  
+  if (regionElement) {
+    regionElement.classList.add('active');
+    const backButton = regionElement.querySelector('.back-to-menu');
+    if (backButton) {
+      backButton.style.display = 'flex';
+    }
+  }
+
+  if (window.event && window.event.target) {
+    document.querySelectorAll('.region-list button').forEach(button => {
+      button.classList.remove('active');
+    });
+    window.event.target.classList.add('active');
+  }
+}
+
+// 直接イベントを設定する関数
+function setupDirectEvents() {
+  // エリア値クリックイベントを再設定
+  const areaValue = document.querySelector('.area-value');
+  if (areaValue) {
+    areaValue.onclick = function(e) {
+      openAreaPopup();
+      if (e) e.preventDefault();
+      return false;
+    };
+  }
+  
+  // 閉じるボタンのイベントを再設定
+  const closeBtn = document.querySelector('.area-popup .close-btn');
+  if (closeBtn) {
+    closeBtn.onclick = function() {
+      closeAreaPopup();
+    };
+  }
+  
+  // オーバーレイのイベントを再設定
+  const overlay = document.getElementById('ev-overlay');
+  if (overlay) {
+    overlay.onclick = function() {
+      closeAreaPopup();
+    };
+  }
+  
+  // 地域選択ボタンのイベントを設定
+  const regionButtons = document.querySelectorAll('.region-list button');
+  regionButtons.forEach(button => {
+    const regionName = button.getAttribute('onclick');
+    if (regionName && regionName.includes('showRegion')) {
+      const regionMatch = regionName.match(/showRegion\('([^']+)'\)/);
+      if (regionMatch && regionMatch[1]) {
+        button.onclick = function() {
+          showRegion(regionMatch[1]);
+        };
+      }
+    }
+  });
+  
+  // 戻るボタンのイベントを設定
+  const backButtons = document.querySelectorAll('.back-to-menu');
+  backButtons.forEach(button => {
+    button.onclick = function() {
+      backToMainMenu();
+    };
+  });
+}
+
+// 初期化関数
+function initializeEventCalendar() {
+  console.log("カレンダー初期化を開始");
+  
+  // 1. セクションIDを更新
+  updateExistingEventSections();
+  
+  // 2. 日付ボタンを生成
+  generateDates();
+  
+  // 3. 直接のイベントを設定
+  setupDirectEvents();
+  
+  // 4. 地域を設定（少し遅延させる）
+  setTimeout(function() {
+    setRegion();
+    
+    // 5. 最初の日付ボタンをクリック
+    const firstDateBtn = document.querySelector('.date-btn');
+    if (firstDateBtn) {
+      firstDateBtn.click();
+    }
+  }, 300);
+
+  // 6. ウィンドウリサイズ時にポップアップ位置を調整
+  window.addEventListener('resize', centerPopup);
+}
+
+// aタグなどのクリックを処理するイベント委任
+document.addEventListener('click', function(e) {
+  // イベントの伝播経路を取得
+  const path = e.composedPath ? e.composedPath() : [];
+  
+  // クリックされた要素とその親要素を確認
+  let target = e.target;
+  let isAreaButton = false;
+  
+  // クリックされた要素から親要素へと辿る
+  while (target && !isAreaButton) {
+    if (target.classList && 
+        (target.classList.contains('area-button') || 
+         target.classList.contains('all-event-btn'))) {
+      isAreaButton = true;
+      break;
+    }
+    target = target.parentElement;
+  }
+  
+  // エリア選択ボタンのクリックを処理
+  if (isAreaButton) {
+    const onclick = target.getAttribute('onclick');
+    if (onclick && onclick.includes("selectArea")) {
+      const areaMatch = onclick.match(/selectArea\('([^']+)'\)/);
+      if (areaMatch && areaMatch[1]) {
+        selectArea(areaMatch[1]);
+      }
+    }
+  }
+  
+  // area-value のクリックを処理
+  if (target.classList && target.classList.contains('area-value')) {
+    openAreaPopup();
+    e.preventDefault();
+    return false;
+  }
+  
+  // area-value の子要素のクリックも処理
+  const closestAreaValue = target.closest && target.closest('.area-value');
+  if (closestAreaValue) {
+    openAreaPopup();
+    e.preventDefault();
+    return false;
+  }
+});
+
+// DOMが読み込まれたら初期化を実行
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("DOMContentLoaded イベント発生");
+  initializeEventCalendar();
+});
+
+// ページが完全に読み込まれたときも地域を再確認
+window.addEventListener('load', function() {
+  console.log("Window load イベント発生");
+  setRegion();
+  
+  // 読み込み完了後にもう一度イベントを設定（安全策）
+  setupDirectEvents();
+});
+</script>
+
+
+{% schema %}
+{
+  "name": "t:sections.main-article.name",
+  "tag": "section",
+  "class": "section",
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "featured_image",
+      "name": "t:sections.main-article.blocks.featured_image.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "select",
+          "id": "image_height",
+          "options": [
+            {
+              "value": "adapt",
+              "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__1.label"
+            },
+            {
+              "value": "small",
+              "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__2.label"
+            },
+            {
+              "value": "medium",
+              "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__3.label"
+            },
+            {
+              "value": "large",
+              "label": "t:sections.main-article.blocks.featured_image.settings.image_height.options__4.label"
+            }
+          ],
+          "default": "adapt",
+          "label": "t:sections.main-article.blocks.featured_image.settings.image_height.label",
+          "info": "t:sections.main-article.blocks.featured_image.settings.image_height.info"
+        }
+      ]
+    },
+    {
+      "type": "title",
+      "name": "t:sections.main-article.blocks.title.name",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "blog_show_date",
+          "default": true,
+          "label": "t:sections.main-article.blocks.title.settings.blog_show_date.label"
+        },
+        {
+          "type": "checkbox",
+          "id": "blog_show_author",
+          "default": false,
+          "label": "t:sections.main-article.blocks.title.settings.blog_show_author.label"
+        }
+      ]
+    },
+    {
+      "type": "content",
+      "name": "t:sections.main-article.blocks.content.name",
+      "limit": 1
+    },
+    {
+      "type": "share",
+      "name": "t:sections.main-article.blocks.share.name",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "text",
+          "id": "share_label",
+          "label": "t:sections.main-article.blocks.share.settings.text.label",
+          "default": "t:sections.main-article.blocks.share.settings.text.default"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:sections.main-article.blocks.share.settings.featured_image_info.content"
+        },
+        {
+          "type": "paragraph",
+          "content": "t:sections.main-article.blocks.share.settings.title_info.content"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

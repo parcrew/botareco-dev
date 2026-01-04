@@ -1,0 +1,129 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "custom_css": [],
+      "settings": {
+        "logo_position": "top-center",
+        "menu": "main-menu",
+        "menu_type_desktop": "drawer",
+        "sticky_header_type": "always",
+        "show_line_separator": true,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "enable_customer_avatar": true,
+        "mobile_logo_position": "center",
+        "margin_bottom": 0,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "announcement_bar_Wr6KfB": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_CdnqCp": {
+          "type": "announcement",
+          "settings": {
+            "text": "ストアへようこそ",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_CdnqCp"
+      ],
+      "disabled": true,
+      "name": "t:sections.announcement-bar.presets.name",
+      "settings": {
+        "color_scheme": "",
+        "show_line_separator": true,
+        "show_social": false,
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    },
+    "announcement_bar_9rtyTT": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_T3Uy4K": {
+          "type": "announcement",
+          "settings": {
+            "text": "※現在新規データをアップしているためイベント情報が12時30分くらいまで確認が表示されづらくなります。",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement_T3Uy4K"
+      ],
+      "disabled": true,
+      "name": "t:sections.announcement-bar.presets.name",
+      "settings": {
+        "color_scheme": "",
+        "show_line_separator": true,
+        "show_social": false,
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    },
+    "announcement_bar_kcBYDy": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_xXzygw": {
+          "type": "announcement",
+          "disabled": true,
+          "settings": {
+            "text": "※データ過多につき表示されづらい状況が続いております。対応を行っておりますが、表示されづらい場合はお手数ですがPCもしくは通信環境が良い箇所で更新をお願いします。",
+            "link": ""
+          }
+        },
+        "announcement_gxWQtt": {
+          "type": "announcement",
+          "disabled": true,
+          "settings": {
+            "text": "エリアページがALLが表示されるバグが発生しておりましたが、現在は修正済みです。もしなんらか問題がありました場合はお手数ですがお問い合わせのほどよろしくお願いします。",
+            "link": "shopify://pages/contact"
+          }
+        }
+      },
+      "block_order": [
+        "announcement_xXzygw",
+        "announcement_gxWQtt"
+      ],
+      "disabled": true,
+      "name": "t:sections.announcement-bar.presets.name",
+      "settings": {
+        "color_scheme": "",
+        "show_line_separator": true,
+        "show_social": false,
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    }
+  },
+  "order": [
+    "header",
+    "announcement_bar_Wr6KfB",
+    "announcement_bar_9rtyTT",
+    "announcement_bar_kcBYDy"
+  ]
+}

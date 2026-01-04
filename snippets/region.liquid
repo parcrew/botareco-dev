@@ -1,0 +1,1022 @@
+<!-- region.liquid - 動的件数表示対応版（地域リンク付き） -->
+<style>
+.region-section-wrapper{max-width:1200px;margin:0 auto;padding:40px 20px}
+.region-header-content{text-align:center;margin-bottom:60px}
+.region-header-content h1{font-size:2.5rem;font-weight:900;color:#333;margin-bottom:20px;letter-spacing:2px}
+.region-header-content p{font-size:1.1rem;color:#666;line-height:1.6}
+.region-layout-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-bottom:40px}
+.region-group-card{background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);overflow:hidden;transition:all .3s ease}
+.region-group-card:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,0,0,.12)}
+
+/* 地域ヘッダーをリンク化 */
+.region-group-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;background:linear-gradient(135deg,#f8f9fa,#e9ecef);border-bottom:1px solid #eee;text-decoration:none;color:inherit;transition:all .3s ease}
+.region-group-header:hover{background:linear-gradient(135deg,#e9ecef,#dee2e6);text-decoration:none;color:inherit}
+.region-group-header h3{font-size:1.3rem;font-weight:bold;color:#333;margin:0;transition:color .3s ease}
+.region-group-header:hover h3{color:#4A90E2}
+.region-group-header span{background:#333;color:#fff;padding:4px 12px;border-radius:20px;font-size:.9rem;font-weight:600;transition:all .3s ease}
+.region-group-header:hover span{background:#4A90E2}
+
+.region-detail-links{padding:20px 24px}
+.region-link-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;text-decoration:none;color:#333;border-bottom:1px solid #f0f0f0;transition:all .2s ease}
+.region-link-item:last-child{border-bottom:none}
+.region-link-item:hover{background:#f8f9fa;margin:0 -12px;padding-left:12px;padding-right:12px;border-radius:8px}
+.region-link-item span:first-child{font-weight:500;flex:1}
+.region-link-item span:nth-child(2){background:#e9ecef;color:#666;padding:2px 8px;border-radius:12px;font-size:.85rem;margin-right:8px}
+.region-link-item span:last-child{color:#999;font-weight:bold}
+.region-link-item.zero-count{opacity:0.6}
+.region-link-item.zero-count span:nth-child(2){background:#f5f5f5;color:#999}
+.all-regions-button-wrapper{text-align:center;margin-top:40px}
+.explore-button-black{display:inline-flex;align-items:center;gap:12px;background:#333;color:#fff;padding:16px 32px;text-decoration:none;border-radius:8px;font-weight:600;font-size:1.1rem;transition:all .3s ease}
+.explore-button-black:hover{background:#222;transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.2);color:#fff;text-decoration:none}
+.explore-button-black span{font-size:1.2rem}
+
+/* ローディング状態 */
+.region-loading{text-align:center;padding:40px;color:#666}
+.region-loading-spinner{width:32px;height:32px;border:3px solid #f3f3f3;border-top:3px solid #333;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+/* レスポンシブ */
+@media (max-width:768px){
+.region-layout-grid{grid-template-columns:1fr;gap:16px}
+.region-header-content h1{font-size:2rem}
+.region-group-header{padding:16px 20px}
+.region-detail-links{padding:16px 20px}
+}
+</style>
+
+<div class="region-section-wrapper">
+  <div class="region-header-content">
+    <h1>EXPLORE BY REGION</h1>
+    <p>全国各地の植物イベントを地域別に探す。<br>あなたの街で開催される特別な体験を見つけよう。</p>
+  </div>
+
+  <!-- ローディング表示 -->
+  <div id="region-loading" class="region-loading">
+    <div class="region-loading-spinner"></div>
+    <p>地域別イベント件数を取得中...</p>
+  </div>
+
+  <!-- 地域グリッド（JavaScript で動的生成） -->
+  <div id="region-layout-grid" class="region-layout-grid" style="display:none;">
+    <!-- 地域カードがここに動的に挿入されます -->
+  </div>
+  
+  <div class="all-regions-button-wrapper" style="display:none;" id="all-regions-button">
+    <a href="/blogs/media/event-list" class="explore-button-black">
+      すべての地域を見る
+      <span>&gt;</span>
+    </a>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   動的地域別イベント件数表示（0件も表示対応・地域リンク対応）
+   ================================================================ */
+(() => {
+  "use strict";
+  
+  // Supabase設定（events-list.jsと同じ）
+  const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhaXhnY2p2b3dkc3pydGRweGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NTM5MTIsImV4cCI6MjA2MTIyOTkxMn0.yAvMili-p_uQMHYlz-fpErgFqX243J5z1zI87VqO63M'.trim();
+  const FUNC_BASE = 'https://laixgcjvowdszrtdpxlq.supabase.co/functions/v1';
+  
+  // 地域データ定義（日本語対応・完全版・地域全域リンク追加）
+  const regionConfig = {
+    HOKKAIDO: {
+      titleJp: '北海道',
+      titleEn: 'HOKKAIDO',
+      allLink: '/blogs/media/event-hokkaido-list',
+      areas: [
+        { code: 'DOUO', name: '道央', link: '/blogs/media/event-douo-list' },
+        { code: 'TOKACHI', name: '十勝', link: '/blogs/media/event-tokachi-list' },
+        { code: 'DONAN', name: '道南', link: '/blogs/media/event-donan-list' },
+        { code: 'OKHOTSK', name: 'オホーツク', link: '/blogs/media/event-okhotsk-list' },
+        { code: 'DOHOKU', name: '道北', link: '/blogs/media/event-dohoku-list' },
+        { code: 'KUSHIRO', name: '釧路・根室', link: '/blogs/media/event-kushiro-list' }
+      ]
+    },
+    TOHOKU: {
+      titleJp: '東北',
+      titleEn: 'TOHOKU',
+      allLink: '/blogs/media/event-tohoku-list',
+      areas: [
+        { code: 'AOMORI', name: '青森県', link: '/blogs/media/event-aomori-list' },
+        { code: 'IWATE', name: '岩手県', link: '/blogs/media/event-iwate-list' },
+        { code: 'MIYAGI', name: '宮城県', link: '/blogs/media/event-miyagi-list' },
+        { code: 'AKITA', name: '秋田県', link: '/blogs/media/event-akita-list' },
+        { code: 'YAMAGATA', name: '山形県', link: '/blogs/media/event-yamagata-list' },
+        { code: 'FUKUSHIMA', name: '福島県', link: '/blogs/media/event-fukushima-list' }
+      ]
+    },
+    KANTO: {
+      titleJp: '関東',
+      titleEn: 'KANTO',
+      allLink: '/blogs/media/event-kanto-list',
+      areas: [
+        { code: 'TOKYO', name: '東京都', link: '/blogs/media/event-tokyo-list' },
+        { code: 'KANAGAWA', name: '神奈川県', link: '/blogs/media/event-kanagawa-list' },
+        { code: 'CHIBA', name: '千葉県', link: '/blogs/media/event-chiba-list' },
+        { code: 'SAITAMA', name: '埼玉県', link: '/blogs/media/event-saitama-list' },
+        { code: 'IBARAKI', name: '茨城県', link: '/blogs/media/event-ibaraki-list' },
+        { code: 'TOCHIGI', name: '栃木県', link: '/blogs/media/event-tochigi-list' },
+        { code: 'GUNMA', name: '群馬県', link: '/blogs/media/event-gunma-list' }
+      ]
+    },
+    CHUBU: {
+      titleJp: '中部',
+      titleEn: 'CHUBU',
+      allLink: '/blogs/media/event-chubu-list',
+      areas: [
+        { code: 'AICHI', name: '愛知県', link: '/blogs/media/event-aichi-list' },
+        { code: 'SHIZUOKA', name: '静岡県', link: '/blogs/media/event-shizuoka-list' },
+        { code: 'GIFU', name: '岐阜県', link: '/blogs/media/event-gifu-list' },
+        { code: 'NAGANO', name: '長野県', link: '/blogs/media/event-nagano-list' },
+        { code: 'YAMANASHI', name: '山梨県', link: '/blogs/media/event-yamanashi-list' },
+        { code: 'NIIGATA', name: '新潟県', link: '/blogs/media/event-niigata-list' },
+        { code: 'TOYAMA', name: '富山県', link: '/blogs/media/event-toyama-list' },
+        { code: 'ISHIKAWA', name: '石川県', link: '/blogs/media/event-ishikawa-list' },
+        { code: 'FUKUI', name: '福井県', link: '/blogs/media/event-fukui-list' }
+      ]
+    },
+    KANSAI: {
+      titleJp: '関西',
+      titleEn: 'KANSAI',
+      allLink: '/blogs/media/event-kansai-list',
+      areas: [
+        { code: 'OSAKA', name: '大阪府', link: '/blogs/media/event-osaka-list' },
+        { code: 'KYOTO', name: '京都府', link: '/blogs/media/event-kyoto-list' },
+        { code: 'HYOGO', name: '兵庫県', link: '/blogs/media/event-hyogo-list' },
+        { code: 'NARA', name: '奈良県', link: '/blogs/media/event-nara-list' },
+        { code: 'SHIGA', name: '滋賀県', link: '/blogs/media/event-shiga-list' },
+        { code: 'WAKAYAMA', name: '和歌山県', link: '/blogs/media/event-wakayama-list' }
+      ]
+    },
+    SHIKOKU: {
+      titleJp: '四国',
+      titleEn: 'SHIKOKU',
+      allLink: '/blogs/media/event-shikoku-list',
+      areas: [
+        { code: 'TOKUSHIMA', name: '徳島県', link: '/blogs/media/event-tokushima-list' },
+        { code: 'KAGAWA', name: '香川県', link: '/blogs/media/event-kagawa-list' },
+        { code: 'EHIME', name: '愛媛県', link: '/blogs/media/event-ehime-list' },
+        { code: 'KOCHI', name: '高知県', link: '/blogs/media/event-kochi-list' }
+      ]
+    },
+    CHUGOKU: {
+      titleJp: '中国',
+      titleEn: 'CHUGOKU',
+      allLink: '/blogs/media/event-chugoku-list',
+      areas: [
+        { code: 'HIROSHIMA', name: '広島県', link: '/blogs/media/event-hiroshima-list' },
+        { code: 'OKAYAMA', name: '岡山県', link: '/blogs/media/event-okayama-list' },
+        { code: 'YAMAGUCHI', name: '山口県', link: '/blogs/media/event-yamaguchi-list' },
+        { code: 'SHIMANE', name: '島根県', link: '/blogs/media/event-shimane-list' },
+        { code: 'TOTTORI', name: '鳥取県', link: '/blogs/media/event-tottori-list' }
+      ]
+    },
+    KYUSHU: {
+      titleJp: '九州',
+      titleEn: 'KYUSHU',
+      allLink: '/blogs/media/event-kyushu-list',
+      areas: [
+        { code: 'FUKUOKA', name: '福岡県', link: '/blogs/media/event-fukuoka-list' },
+        { code: 'SAGA', name: '佐賀県', link: '/blogs/media/event-saga-list' },
+        { code: 'NAGASAKI', name: '長崎県', link: '/blogs/media/event-nagasaki-list' },
+        { code: 'KUMAMOTO', name: '熊本県', link: '/blogs/media/event-kumamoto-list' },
+        { code: 'OITA', name: '大分県', link: '/blogs/media/event-oita-list' },
+        { code: 'MIYAZAKI', name: '宮崎県', link: '/blogs/media/event-miyazaki-list' },
+        { code: 'KAGOSHIMA', name: '鹿児島県', link: '/blogs/media/event-kagoshima-list' }
+      ]
+    },
+    OKINAWA: {
+      titleJp: '沖縄',
+      titleEn: 'OKINAWA',
+      allLink: '/blogs/media/event-okinawa-list',
+      areas: [
+        { code: 'NAHA', name: '那覇市', link: '/blogs/media/event-naha-list' },
+        { code: 'OKINAWA', name: '沖縄本島', link: '/blogs/media/event-okinawa-main-list' },
+        { code: 'ISHIGAKI', name: '石垣島', link: '/blogs/media/event-ishigaki-list' }
+      ]
+    }
+  };
+  
+  // 初期化（重複実行防止）
+  if (!window.__REGION_LOADED) {
+    window.__REGION_LOADED = true;
+    loadRegionData();
+  }
+  
+  async function loadRegionData() {
+    try {
+      console.log('🌍 地域別イベント件数取得開始');
+      
+      // 複数月のデータを取得して今日以降をフィルタ
+      const allEvents = await fetchMultipleMonths();
+      const today = new Date().toISOString().slice(0, 10);
+      const futureEvents = allEvents.filter(event => event.event_date >= today);
+      
+      console.log(`📊 取得イベント数: ${futureEvents.length}件（今日以降）`);
+      
+      // 重複除去（期間イベント保護）
+      const uniqueEvents = removeDuplicates(futureEvents);
+      console.log(`🔧 重複除去後: ${uniqueEvents.length}件`);
+      
+      // 地域別集計
+      const regionCounts = countEventsByRegion(uniqueEvents);
+      
+      // UI描画
+      renderRegionCards(regionCounts);
+      
+      console.log('✅ 地域別表示完了');
+      
+    } catch (error) {
+      console.error('❌ 地域データ取得エラー:', error);
+      showError();
+    }
+  }
+  
+  async function fetchMultipleMonths() {
+    const allEvents = [];
+    const today = new Date();
+    
+    // 今月から4ヶ月先まで取得（十分なデータ確保）
+    for (let i = 0; i < 5; i++) {
+      const targetDate = new Date(today.getFullYear(), today.getMonth() + i, 1);
+      const monthStr = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}`;
+      
+      try {
+        const url = `${FUNC_BASE}/get-events?month=${monthStr}`;
+        const response = await fetch(url, {
+          headers: { Authorization: `Bearer ${ANON_KEY}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          const events = data.events || data.data || [];
+          allEvents.push(...events);
+          console.log(`📅 ${monthStr}: ${events.length}件取得`);
+        } else {
+          console.warn(`⚠️ ${monthStr}: API応答エラー ${response.status}`);
+        }
+      } catch (error) {
+        console.warn(`⚠️ ${monthStr}のデータ取得に失敗:`, error);
+      }
+    }
+    
+    return allEvents;
+  }
+  
+  function removeDuplicates(events) {
+    // 同一日付内でのslug重複除去（期間イベント保護）
+    const byDate = {};
+    events.forEach(event => {
+      const date = event.event_date;
+      if (!byDate[date]) byDate[date] = [];
+      byDate[date].push(event);
+    });
+    
+    const cleaned = [];
+    Object.keys(byDate).forEach(date => {
+      const dayEvents = byDate[date];
+      const seenSlugs = new Set();
+      const uniqueDayEvents = [];
+      
+      dayEvents.forEach(event => {
+        if (!seenSlugs.has(event.slug)) {
+          seenSlugs.add(event.slug);
+          uniqueDayEvents.push(event);
+        }
+      });
+      
+      cleaned.push(...uniqueDayEvents);
+    });
+    
+    return cleaned;
+  }
+  
+  function countEventsByRegion(events) {
+    const counts = {};
+    
+    // 初期化（0件も表示するため全地域を初期化）
+    Object.keys(regionConfig).forEach(region => {
+      counts[region] = { total: 0, areas: {} };
+      regionConfig[region].areas.forEach(area => {
+        counts[region].areas[area.code] = 0;
+      });
+    });
+    
+    // イベントをカウント
+    events.forEach(event => {
+      const regions = event.regions || [];
+      
+      regions.forEach(region => {
+        // 広域地域（KANTO、KANSAI等）への直接マッピング
+        if (counts[region]) {
+          counts[region].total++;
+        }
+        
+        // 個別都道府県・エリアへのマッピング
+        Object.keys(regionConfig).forEach(regionKey => {
+          const areaExists = regionConfig[regionKey].areas.find(area => area.code === region);
+          if (areaExists) {
+            counts[regionKey].areas[region]++;
+            counts[regionKey].total++;
+          }
+        });
+      });
+    });
+    
+    console.log('📊 地域別集計結果:', counts);
+    return counts;
+  }
+  
+  function renderRegionCards(counts) {
+    const grid = document.getElementById('region-layout-grid');
+    
+    const html = Object.keys(regionConfig).map(regionKey => {
+      const region = regionConfig[regionKey];
+      const regionCount = counts[regionKey];
+      
+      // すべての地域を表示（0件も含む）
+      const areaLinks = region.areas.map(area => {
+        const count = regionCount.areas[area.code];
+        const cssClass = count === 0 ? 'region-link-item zero-count' : 'region-link-item';
+        
+        return `
+          <a href="${area.link}" class="${cssClass}">
+            <span>${area.name}</span>
+            <span>${count}</span>
+            <span>&gt;</span>
+          </a>
+        `;
+      }).join('');
+      
+      return `
+        <div class="region-group-card">
+          <a href="${region.allLink}" class="region-group-header">
+            <h3>${region.titleEn}</h3>
+            <span>${regionCount.total}</span>
+          </a>
+          <div class="region-detail-links">
+            ${areaLinks}
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    grid.innerHTML = html;
+    
+    // 表示切替
+    document.getElementById('region-loading').style.display = 'none';
+    grid.style.display = 'grid';
+    document.getElementById('all-regions-button').style.display = 'block';
+    
+    console.log('🎨 地域カード描画完了');
+  }
+  
+  function showError() {
+    const loading = document.getElementById('region-loading');
+    loading.innerHTML = `
+      <p style="color: #666;">地域別イベント情報の取得に失敗しました。</p>
+      <button onclick="location.reload()" style="background: #333; color: #fff; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 10px;">再読み込み</button>
+    `;
+    
+    // ボタンだけでも表示
+    document.getElementById('all-regions-button').style.display = 'block';
+  }
+})();
+</script>
+
+<!--
+<div class="region-section-wrapper">
+  <div class="region-header-content">
+    <h1>EXPLORE BY REGION</h1>
+    <p>全国各地の植物イベントを地域別に探す。<br>あなたの街で開催される特別な体験を見つけよう。</p>
+  </div>
+
+  <div class="region-layout-grid">
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>HOKKAIDO - 北海道地方の植物イベント</h3>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-douo-list" class="region-link-item">
+          <span class="region-link-name">DOUO<br><small>道央の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-tokachi-list" class="region-link-item">
+          <span class="region-link-name">TOKACHI<br><small>十勝の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-donan-list" class="region-link-item">
+          <span class="region-link-name">DONAN<br><small>道南の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-okhotsk-list" class="region-link-item">
+          <span class="region-link-name">OKHOTSK<br><small>オホーツクの植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-dohoku-list" class="region-link-item">
+          <span class="region-link-name">DOHOKU<br><small>道北の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kushiro-list" class="region-link-item">
+          <span class="region-link-name">KUSHIRO/NEMURO<br><small>釧路・根室の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>TOHOKU - 東北地方の植物イベント</h3>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-aomori-list" class="region-link-item">
+          <span class="region-link-name">AOMORI<br><small>青森の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-iwate-list" class="region-link-item">
+          <span class="region-link-name">IWATE<br><small>岩手の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-miyagi-list" class="region-link-item">
+          <span class="region-link-name">MIYAGI<br><small>宮城の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-akita-list" class="region-link-item">
+          <span class="region-link-name">AKITA<br><small>秋田の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-yamagata-list" class="region-link-item">
+          <span class="region-link-name">YAMAGATA<br><small>山形の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-fukushima-list" class="region-link-item">
+          <span class="region-link-name">FUKUSHIMA<br><small>福島の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>KANTO - 関東地方の植物イベント</h3>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-tokyo-list" class="region-link-item">
+          <span class="region-link-name">TOKYO<br><small>東京の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kanagawa-list" class="region-link-item">
+          <span class="region-link-name">KANAGAWA<br><small>神奈川の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-chiba-list" class="region-link-item">
+          <span class="region-link-name">CHIBA<br><small>千葉の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-saitama-list" class="region-link-item">
+          <span class="region-link-name">SAITAMA<br><small>埼玉の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-ibaraki-list" class="region-link-item">
+          <span class="region-link-name">IBARAKI<br><small>茨城の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-tochigi-list" class="region-link-item">
+          <span class="region-link-name">TOCHIGI<br><small>栃木の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>CHUBU - 中部地方の植物イベント</h3>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-aichi-list" class="region-link-item">
+          <span class="region-link-name">AICHI<br><small>愛知の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-shizuoka-list" class="region-link-item">
+          <span class="region-link-name">SHIZUOKA<br><small>静岡の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-gifu-list" class="region-link-item">
+          <span class="region-link-name">GIFU<br><small>岐阜の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-nagano-list" class="region-link-item">
+          <span class="region-link-name">NAGANO<br><small>長野の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-yamanashi-list" class="region-link-item">
+          <span class="region-link-name">YAMANASHI<br><small>山梨の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-niigata-list" class="region-link-item">
+          <span class="region-link-name">NIIGATA<br><small>新潟の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-toyama-list" class="region-link-item">
+          <span class="region-link-name">TOYAMA<br><small>富山の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-ishikawa-list" class="region-link-item">
+          <span class="region-link-name">ISHIKAWA<br><small>石川の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>KANSAI - 関西地方の植物イベント</h3>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-osaka-list" class="region-link-item">
+          <span class="region-link-name">OSAKA<br><small>大阪の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kyoto-list" class="region-link-item">
+          <span class="region-link-name">KYOTO<br><small>京都の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-hyogo-list" class="region-link-item">
+          <span class="region-link-name">HYOGO<br><small>兵庫の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-nara-list" class="region-link-item">
+          <span class="region-link-name">NARA<br><small>奈良の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-shiga-list" class="region-link-item">
+          <span class="region-link-name">SHIGA<br><small>滋賀の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-wakayama-list" class="region-link-item">
+          <span class="region-link-name">WAKAYAMA<br><small>和歌山の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>SHIKOKU - 四国地方の植物イベント</h3>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-tokushima-list" class="region-link-item">
+          <span class="region-link-name">TOKUSHIMA<br><small>徳島の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kagawa-list" class="region-link-item">
+          <span class="region-link-name">KAGAWA<br><small>香川の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-ehime-list" class="region-link-item">
+          <span class="region-link-name">EHIME<br><small>愛媛の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kochi-list" class="region-link-item">
+          <span class="region-link-name">KOCHI<br><small>高知の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>CHUGOKU</h3>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-hiroshima-list" class="region-link-item">
+          <span class="region-link-name">HIROSHIMA<br><small>広島の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-okayama-list" class="region-link-item">
+          <span class="region-link-name">OKAYAMA<br><small>岡山の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-yamaguchi-list" class="region-link-item">
+          <span class="region-link-name">YAMAGUCHI<br><small>山口の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-shimane-list" class="region-link-item">
+          <span class="region-link-name">SHIMANE<br><small>島根の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>KYUSHU - 九州地方の植物イベント</h3>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-fukuoka-list" class="region-link-item">
+          <span class="region-link-name">FUKUOKA<br><small>福岡の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-saga-list" class="region-link-item">
+          <span class="region-link-name">SAGA<br><small>佐賀の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-nagasaki-list" class="region-link-item">
+          <span class="region-link-name">NAGASAKI<br><small>長崎の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kumamoto-list" class="region-link-item">
+          <span class="region-link-name">KUMAMOTO<br><small>熊本の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-oita-list" class="region-link-item">
+          <span class="region-link-name">OITA<br><small>大分の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-miyazaki-list" class="region-link-item">
+          <span class="region-link-name">MIYAZAKI<br><small>宮崎の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>OKINAWA - 沖縄地方の植物イベント</h3>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-naha-list" class="region-link-item">
+          <span class="region-link-name">NAHA<br><small>那覇の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-okinawa-main-list" class="region-link-item">
+          <span class="region-link-name">OKINAWA MAIN<br><small>沖縄本島の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-ishigaki-list" class="region-link-item">
+          <span class="region-link-name">ISHIGAKI<br><small>石垣の植物イベント</small></span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+  
+  <div class="all-regions-button-wrapper">
+    <a href="https://leaf-laboratory.com/blogs/media/event-list" class="explore-button-black">
+      全国の最新植物イベントを探す
+      <span>&gt;</span>
+    </a>
+  </div>
+</div>
+-->
+
+<!--ナンバリングがあるやつ
+<div class="region-section-wrapper">
+  <div class="region-header-content">
+    <h1>EXPLORE BY REGION</h1>
+    <p>全国各地の植物イベントを地域別に探す。<br>あなたの街で開催される特別な体験を見つけよう。</p>
+  </div>
+
+  <div class="region-layout-grid">
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>HOKKAIDO</h3>
+        <span>10</span>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-douo-list" class="region-link-item">
+          <span>DOUO</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-tokachi-list" class="region-link-item">
+          <span>TOKACHI</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-donan-list" class="region-link-item">
+          <span>DONAN</span>
+          <span>1</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-okhotsk-list" class="region-link-item">
+          <span>OKHOTSK</span>
+          <span>1</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-dohoku-list" class="region-link-item">
+          <span>DOHOKU</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kushiro-list" class="region-link-item">
+          <span>KUSHIRO/NEMURO</span>
+          <span>1</span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>TOHOKU</h3>
+        <span>25</span>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-aomori-list" class="region-link-item">
+          <span>AOMORI</span>
+          <span>4</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-iwate-list" class="region-link-item">
+          <span>IWATE</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-miyagi-list" class="region-link-item">
+          <span>MIYAGI</span>
+          <span>8</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-akita-list" class="region-link-item">
+          <span>AKITA</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-yamagata-list" class="region-link-item">
+          <span>YAMAGATA</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-fukushima-list" class="region-link-item">
+          <span>FUKUSHIMA</span>
+          <span>5</span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>KANTO</h3>
+        <span>78</span>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-tokyo-list" class="region-link-item">
+          <span>TOKYO</span>
+          <span>45</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kanagawa-list" class="region-link-item">
+          <span>KANAGAWA</span>
+          <span>12</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-chiba-list" class="region-link-item">
+          <span>CHIBA</span>
+          <span>8</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-saitama-list" class="region-link-item">
+          <span>SAITAMA</span>
+          <span>6</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-ibaraki-list" class="region-link-item">
+          <span>IBARAKI</span>
+          <span>4</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-tochigi-list" class="region-link-item">
+          <span>TOCHIGI</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>CHUBU</h3>
+        <span>45</span>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-aichi-list" class="region-link-item">
+          <span>AICHI</span>
+          <span>15</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-shizuoka-list" class="region-link-item">
+          <span>SHIZUOKA</span>
+          <span>7</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-gifu-list" class="region-link-item">
+          <span>GIFU</span>
+          <span>4</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-nagano-list" class="region-link-item">
+          <span>NAGANO</span>
+          <span>6</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-yamanashi-list" class="region-link-item">
+          <span>YAMANASHI</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-niigata-list" class="region-link-item">
+          <span>NIIGATA</span>
+          <span>5</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-toyama-list" class="region-link-item">
+          <span>TOYAMA</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-ishikawa-list" class="region-link-item">
+          <span>ISHIKAWA</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>KANSAI</h3>
+        <span>57</span>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-osaka-list" class="region-link-item">
+          <span>OSAKA</span>
+          <span>22</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kyoto-list" class="region-link-item">
+          <span>KYOTO</span>
+          <span>18</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-hyogo-list" class="region-link-item">
+          <span>HYOGO</span>
+          <span>9</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-nara-list" class="region-link-item">
+          <span>NARA</span>
+          <span>4</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-shiga-list" class="region-link-item">
+          <span>SHIGA</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-wakayama-list" class="region-link-item">
+          <span>WAKAYAMA</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>SHIKOKU</h3>
+        <span>10</span>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-tokushima-list" class="region-link-item">
+          <span>TOKUSHIMA</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kagawa-list" class="region-link-item">
+          <span>KAGAWA</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-ehime-list" class="region-link-item">
+          <span>EHIME</span>
+          <span>4</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kochi-list" class="region-link-item">
+          <span>KOCHI</span>
+          <span>1</span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>CHUGOKU</h3>
+        <span>18</span>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-hiroshima-list" class="region-link-item">
+          <span>HIROSHIMA</span>
+          <span>8</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-okayama-list" class="region-link-item">
+          <span>OKAYAMA</span>
+          <span>5</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-yamaguchi-list" class="region-link-item">
+          <span>YAMAGUCHI</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-shimane-list" class="region-link-item">
+          <span>SHIMANE</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>KYUSHU</h3>
+        <span>26</span>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-fukuoka-list" class="region-link-item">
+          <span>FUKUOKA</span>
+          <span>12</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-saga-list" class="region-link-item">
+          <span>SAGA</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-nagasaki-list" class="region-link-item">
+          <span>NAGASAKI</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-kumamoto-list" class="region-link-item">
+          <span>KUMAMOTO</span>
+          <span>4</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-oita-list" class="region-link-item">
+          <span>OITA</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-miyazaki-list" class="region-link-item">
+          <span>MIYAZAKI</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+    
+    <div class="region-group-card">
+      <div class="region-group-header">
+        <h3>OKINAWA</h3>
+        <span>6</span>
+      </div>
+      <div class="region-detail-links">
+        <a href="https://leaf-laboratory.com/blogs/media/event-naha-list" class="region-link-item">
+          <span>NAHA</span>
+          <span>3</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-okinawa-main-list" class="region-link-item">
+          <span>OKINAWA MAIN</span>
+          <span>2</span>
+          <span>&gt;</span>
+        </a>
+        <a href="https://leaf-laboratory.com/blogs/media/event-ishigaki-list" class="region-link-item">
+          <span>ISHIGAKI</span>
+          <span>1</span>
+          <span>&gt;</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+  
+  <div class="all-regions-button-wrapper">
+    <a href="https://leaf-laboratory.com/blogs/media/event-list" class="explore-button-black">
+      すべての地域を見る
+      <span>&gt;</span>
+    </a>
+  </div>
+</div>
+-->

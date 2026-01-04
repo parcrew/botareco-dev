@@ -1,0 +1,188 @@
+{{ 'leaflabot-app.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'leaflabot-app.js' | asset_url }}" defer></script>
+<style>
+/* ========================================
+   マイページスタイル
+   ======================================== */
+
+.my-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.my-page-header {
+  margin-bottom: 32px;
+}
+
+.my-page-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+}
+
+.my-page-header p {
+  color: #6b7280;
+  margin: 0;
+}
+
+.my-page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.my-page-card {
+  background: white;
+  border: 2px solid #111;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.my-page-card h2 {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-number {
+  font-size: 36px;
+  font-weight: 800;
+  color: #1B8F5A;
+  margin: 8px 0;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.event-item {
+  display: block;
+  padding: 12px;
+  background: white;
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+}
+
+.event-item:hover {
+  border-color: #1B8F5A;
+  transform: translateY(-2px);
+}
+
+.event-date {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.event-title {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.care-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #fef3c7;
+  border-radius: 8px;
+  border: 1px solid #fbbf24;
+  margin-bottom: 8px;
+}
+
+.care-icon {
+  font-size: 24px;
+}
+
+.care-info {
+  flex: 1;
+}
+
+.care-plant-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.care-type {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.btn-neo-style {
+  display: inline-block;
+  border: 2px solid #111;
+  border-radius: 16px;
+  padding: 12px 24px;
+  background: white;
+  color: #111;
+  transition: all 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.btn-neo-style:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 0 #111;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #9ca3af;
+}
+
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+</style>
+
+{% render 'botareco-header' %}
+<div id="my-page-root" class="my-page-container">
+  <div class="loading">読み込み中...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  window.MY_PAGE_CONFIG = {
+    userEmail: {{ customer.email | json }},
+    supabaseUrl: 'https://laixgcjvowdszrtdpxlq.supabase.co',
+    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhaXhnY2p2b3dkc3pydGRweGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NTM5MTIsImV4cCI6MjA2MTIyOTkxMn0.yAvMili-p_uQMHYlz-fpErgFqX243J5z1zI87VqO63M'
+  };
+</script>
+
+{{ 'my-page.js' | asset_url | script_tag }}
+
+<div class="main-page-wide section-{{ section.id }}-padding">
+  <div class="rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    {{ page.content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "My Page",
+  "tag": "section",
+  "class": "section"
+}
+{% endschema %}

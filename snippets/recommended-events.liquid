@@ -1,0 +1,196 @@
+ <!--
+<section class="featured-events-section">
+
+
+  <div class="featured-block">
+   
+    <div class="featured-header">
+      <h3 class="featured-title">
+        <img src="https://cdn.shopify.com/s/files/1/0658/5332/5495/files/ev-dy-ic.png?v=1754373243"
+             alt="おすすめ"
+             class="featured-icon"
+             width="20"
+             height="20">
+        おすすめの植物イベント
+        <span class="featured-badge">編集部おすすめ</span>
+      </h3>
+    </div>
+    <div class="featured-content">
+  -->
+<!-- 例：古い順(昇順)で3件だけ表示。必要なら data-order="topics2377,topics1819" で手動優先も可 -->
+<!-- 
+<div id="ll-featured-mount"
+     data-blog="media"
+     data-tag="featured"
+     data-max="12"
+     -->
+     <!--data-sort="asc" -->        <!-- asc=古い→新しい / desc=新しい→古い -->
+     <!--data-order="" -->          <!-- 任意: 手動優先順（handleをカンマ区切り） -->
+     <!--data-collect="200"> -->    <!-- 収集上限（ページ跨ぎでここまで集めてから絞る） -->
+     
+<!-- 
+  <div class="ll-featured-loading">読み込み中…</div>
+</div>
+
+
+      
+    </div>
+  </div>
+-->
+
+<style>
+  /* 後挿入で画像が見えないテーマ対策（この枠内だけ適用） */
+  #ll-featured-mount .media { position: static !important; }
+
+  /* 4→3→2→1列のレスポンシブグリッド */
+  #ll-featured-mount .blog-articles {
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 1200px) { #ll-featured-mount .blog-articles { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+  @media (min-width: 900px)  { #ll-featured-mount .blog-articles { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+  @media (min-width: 600px)  { #ll-featured-mount .blog-articles { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  #ll-featured-mount .blog-articles__article { width: auto !important; }
+
+  /* 後挿入要素が不可視のままになるテーマのアニメ無効化 */
+  #ll-featured-mount .article,
+  #ll-featured-mount .card__inner,
+  #ll-featured-mount [class*="animate--"] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+</style>
+
+<script>
+(() => {
+  const mount = document.getElementById('ll-featured-mount');
+  if (!mount) return;
+
+  const BLOG  = mount.dataset.blog || 'media';
+  const TAG   = mount.dataset.tag  || 'featured';
+  const MAX   = parseInt(mount.dataset.max || '8', 10);
+  const SORT  = (mount.dataset.sort || 'asc').toLowerCase();     // asc | desc
+  const COLLECT = parseInt(mount.dataset.collect || '200', 10);  // まず何件まで集めるか
+
+  // 手動優先（小さいindexほど前）
+  const ORDER = (mount.getAttribute('data-order') || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(s => normalizeHandle(s));
+  const orderPos = new Map(ORDER.map((h, i) => [h, i]));
+
+  // ===== helpers =====
+  function normalizeHandle(input) {
+    if (!input) return '';
+    try {
+      const a = document.createElement('a');
+      a.href = input.startsWith('/') ? input : ('/blogs/' + BLOG + '/' + input);
+      const m = a.pathname.match(/\/blogs\/[^/]+\/([^/?#]+)/);
+      return (m ? m[1] : input).toLowerCase();
+    } catch {
+      const m = String(input).match(/([^/]+)$/);
+      return (m ? m[1] : String(input)).toLowerCase();
+    }
+  }
+
+  const ts = (iso) => {
+    if (!iso) return 0;
+    const t = Date.parse(iso);
+    return Number.isFinite(t) ? t : 0;
+  };
+
+  const handleOf = (card) => {
+    const href = card.querySelector('a.full-unstyled-link')?.getAttribute('href') || '';
+    const m = href.match(/\/blogs\/[^/]+\/([^/?#]+)/);
+    return (m ? m[1] : '').toLowerCase();
+  };
+
+  // 公開日（登録日）を読む：<time datetime="..."> or data-published
+  const publishedAtOf = (card) => {
+    const dt = card.querySelector('time[datetime]')?.getAttribute('datetime')
+             || card.getAttribute('data-published');
+    return ts(dt);
+  };
+
+  const pickList = (root) =>
+    root.querySelector('.blog-articles.blog-articles--collage') ||
+    root.querySelector('.blog-articles');
+
+  const pickCards = (list) =>
+    list ? Array.from(list.querySelectorAll('.blog-articles__article')) : [];
+
+  const basePath = `/blogs/${BLOG}/tagged/${encodeURIComponent(TAG)}`;
+  const getPageHtml = async (page) => {
+    const u = new URL(basePath, location.origin);
+    u.searchParams.set('page', page);
+    u.searchParams.set('_cb', Date.now()); // cache-bust
+    const res = await fetch(u.pathname + u.search, { credentials: 'same-origin' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.text();
+  };
+
+  (async () => {
+    try {
+      const pool = [];
+      let firstListClass = 'blog-articles';
+
+      // ★ 先に十分な件数を全ページから収集してからソートする
+      for (let page = 1; pool.length < COLLECT && page <= 50; page++) {
+        const html = await getPageHtml(page);
+        const tmp  = document.createElement('div');
+        tmp.innerHTML = html;
+
+        const list = pickList(tmp);
+        if (!list) break;
+        if (page === 1) firstListClass = list.className;
+
+        const cards = pickCards(list);
+        if (!cards.length) break;
+
+        for (const c of cards) {
+          pool.push(c);
+          if (pool.length >= COLLECT) break;
+        }
+      }
+
+      if (!pool.length) {
+        mount.innerHTML = '<p>おすすめ記事はありません。</p>';
+        return;
+      }
+
+      // 並び替え：手動順（ORDER） > 公開日（登録日）asc/desc > handle
+      pool.sort((a, b) => {
+        const ha = handleOf(a), hb = handleOf(b);
+        const ia = orderPos.has(ha) ? orderPos.get(ha) : Infinity;
+        const ib = orderPos.has(hb) ? orderPos.get(hb) : Infinity;
+        if (ia !== ib) return ia - ib;
+
+        const pa = publishedAtOf(a), pb = publishedAtOf(b);
+        if (pa !== pb) return (SORT === 'asc') ? (pa - pb) : (pb - pa);
+
+        return ha.localeCompare(hb);
+      });
+
+      // 表示反映
+      const wrapper = document.createElement('div');
+      wrapper.className = firstListClass;
+      pool.slice(0, MAX).forEach(c => wrapper.appendChild(c));
+
+      mount.innerHTML = '';
+      mount.appendChild(wrapper);
+
+      // 後挿入アニメ無効化
+      wrapper.querySelectorAll('.scroll-trigger,[class*="animate--"]').forEach(el => {
+        el.classList.add('animate--visible');
+        el.classList.remove('scroll-trigger','animate--slide-in','animate--fade-in','animate--zoom-in');
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    } catch (e) {
+      console.error('featured load error:', e);
+      mount.innerHTML = '<p>おすすめ記事の読み込みに失敗しました。</p>';
+    }
+  })();
+})();
+</script>

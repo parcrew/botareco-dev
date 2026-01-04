@@ -1,0 +1,283 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "custom_liquid_EKEbpR": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<!-- =========== Hero Section =========== -->\n<section class=\"hero-section\">\n  <div class=\"hero-background\">\n    <div class=\"bg-tile tile-1\"></div>\n    <div class=\"bg-tile tile-2\"></div>\n    <div class=\"bg-tile tile-3\"></div>\n    <div class=\"bg-tile tile-4\"></div>\n    <div class=\"background-overlay\"></div>\n  </div>\n\n  <div class=\"hero-content\">\n    <div class=\"hero-container\">\n      <div class=\"hero-header\">\n        <h1 class=\"hero-title\">DISCOVER<br>PLANT WORLD</h1>\n        <p class=\"hero-subtitle\">\n          \n自然や緑のある暮らしを<br>\n        </p>\n      </div>\n\n      <div class=\"hero-actions\">\n        <a href=\"https://leaf-laboratory.com/blogs/media/event-list\" class=\"btn btn-primary\">\n          <span class=\"btn-icon\"><img src=\"https://cdn.shopify.com/s/files/1/0658/5332/5495/files/ev-dy-ic.png?v=1754373243\" class=\"ec-dyi-b\" alt=\"\"></span>\n          <span class=\"btn-text\">イベントカレンダーを見る</span>\n          <span class=\"btn-arrow\">→</span>\n        </a>\n\n        <a href=\"https://leaf-laboratory.com/blogs/media/glossary-list\" class=\"btn btn-secondary\">\n          <span class=\"btn-text\">植物用語集を見る</span>\n        </a>\n      </div>\n    </div>\n  </div>\n</section>\n\n<style>\n/* === Layout === */\n.hero-section{position:relative;width:100%;height:100vh;min-height:600px;overflow:hidden;display:flex;align-items:center;justify-content:center;}\n.hero-background{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);}\n@media(max-width:767px){.hero-background{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);}}\n\n/* === Tiles === */\n.bg-tile{background-size:cover;background-position:center;display:block!important;}\n/* ✅ URL を cdn.shopify.com に統一 */\n.tile-1{background-image:url('https://cdn.shopify.com/s/files/1/0658/5332/5495/articles/agave-titanota-hakugei.jpg?v=1726758271');}\n.tile-2{background-image:url('https://cdn.shopify.com/s/files/1/0658/5332/5495/articles/agave-titanota-black-and-blue-cultivation-guide.jpg?v=1731826905');}\n.tile-3{background-image:url('https://cdn.shopify.com/s/files/1/0658/5332/5495/files/euphorbia-lactea-b1d1f1h1j1l1n2p6r13t37.jpg?v=1730721567');}\n.tile-4{background-image:url('https://cdn.shopify.com/s/files/1/0658/5332/5495/articles/operculicarya-pachypus-b1d1f1h1j1l1n2p9r16t42.jpg?v=1729735627');}\n\n.background-overlay{position:absolute;inset:0;background:linear-gradient(45deg,rgba(0,0,0,.4) 0%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.35) 100%);z-index:2;}\n\n/* === Content (省略せず貼り付け可。以下は要点だけ) === */\n.hero-content{position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;}\n.hero-container{max-width:800px;width:100%;}\n.hero-title{font-size:60px;font-weight:700;color:#fff;line-height:1.1;letter-spacing:-.02em;text-shadow:2px 2px 4px rgba(0,0,0,.5);margin-bottom:30px;text-transform:uppercase;}\n.hero-subtitle{font-size:16px;color:#fff;line-height:1.6;text-shadow:1px 1px 2px rgba(0,0,0,.5);opacity:.95;max-width:600px;margin:20px auto;}\n.hero-actions{display:flex;flex-direction:column;gap:20px;align-items:center;}\n.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:16px 32px;border:none;border-radius:4px;font-size:16px;font-weight:600;cursor:pointer;transition:.3s;}\n.btn-primary{background:#fff;color:#000;border:2px solid #fff;}\n.btn-primary:hover {\n  transform: scale(1.03); /* 少し拡大 */\n  /* 以下2行で色を固定（変更しない） */\n  background: #fff;\n}\n.btn-secondary{background:rgba(255,255,255,.2);color:#fff;border:2px solid rgba(255,255,255,.4);backdrop-filter:blur(1px);}\n.btn-secondary:hover{background:rgba(255,255,255,.3);transform:translateY(-2px);}\n.ec-dyi-b{display:block;width:20px;margin-top: 2px;}\n</style>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "rich_text_wU7KgY": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_BjNTk7": {
+          "type": "heading",
+          "settings": {
+            "heading": "<strong>開催されるアガベ・多肉や盆栽、鉢など植物イベント情報</strong>",
+            "heading_size": "h2"
+          }
+        },
+        "text_tjUymw": {
+          "type": "text",
+          "settings": {
+            "text": "<p>開催予定の多肉植物など観葉植物や盆栽、鉢の「即売会」や「POP-UP」「展示会」などのイベントをご紹介しています。アート、ファッション、アンティーク家具との融合、無料の育成相談、フラワーオークションなど幅広い内容が楽しめるイベントが各地で開催されます。新たな植物との出会いや愛好家同士の交流を深めるチャンスをお見逃しなく！</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_BjNTk7",
+        "text_tjUymw"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 28
+      }
+    },
+    "custom_liquid_3ABtCK": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<!---->\n<a href=\"https://leaf-laboratory.com/blogs/media/event-list\" class=\"btns btn-border\"><span>2025年植物イベント一覧のまとめを見る</span></a>\n \n\n<!--\n<a href=\"https://leaf-laboratory.com/blogs/media/topics1103\" class=\"btns btn-border\"><span>本日5月18日に開催される<br>植物イベント35選！</span></a>\n\n<a style=\"display:block; text-align:center;\" href=\"https://leaf-laboratory.com/blogs/media/event-list\">>来週以降の2025年最新の植物イベントを見る</a>\n-->\n\n<!--\n<a href=\"https://leaf-laboratory.com/blogs/media/topics1497\" class=\"btns btn-border\"><span>3連休のボタ活おすすめ<br>植物イベント紹介！</span></a>\n-->\n\n<div class=\"top_btns_box\">\n\n<!--tps://leaf-laboratory.com/blogs/media/event-list-2025-12-27\" class=\"btns btn-border\"><span>【12/27】植物イベント27選！</span></a>\n\n<a href=\"https://leaf-laboratory.com/blogs/media/event-list-2025-12-28\" class=\"btns btn-border\"><span>【12/28】植物イベント21選！</span></a>\n-->\n\n\n<!--\n<a href=\"https://leaf-laboratory.com/blogs/media/event-list-2025-12-07\" class=\"btns btn-border\"><span>【12/07】植物イベント51選！</span></a>\n-->\n\n<!---->\n\n</div>\n\n\n\n\n<!--\n\n<a style=\"display:block; text-align:center;\" href=\"https://leaf-laboratory.com/blogs/media/event-list\">>来週以降の2025年最新の植物イベントを見る</a>\n-->\n\n\n\n\n<!--\n<p style=\"border:1px solid #ddd; background: #f2f2f2; width:98%; max-width: 920px; min-width: 320px; display: block; margin: 10px auto; padding: 10px;\">※植物イベント一覧ページがイベント情報が多いことと、アクセス過多により重たくWiFiがない環境やスマートフォンなどの端末で開きづらい状態が続いております。ご迷惑をおかけしておりますが現在改善対応中となりますので、重たい場合はお手数ですがPCか時間を空けてアクセスのほどお願いします。早期対策を講じて参りますので引き続きリーフラをお願いします。</p>\n-->",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 20
+      }
+    },
+    "image_with_text_cgCG7T": {
+      "type": "image-with-text",
+      "blocks": {
+        "heading_zCPFNA": {
+          "type": "heading",
+          "settings": {
+            "heading": "プランツ×プランツ2025が札幌東区で6月開催",
+            "heading_size": "h2"
+          }
+        },
+        "text_twm6QK": {
+          "type": "text",
+          "settings": {
+            "text": "<p>2025年6月14日から15日にかけて札幌東区のガーデニングショップマインでプランツ×プランツ2025が開催！北海道の選りすぐり育成家やショップが集結する大規模な植物イベント。植物愛好家から一般来場者まで楽しめる構成となっています🌵</p>",
+            "text_style": "body"
+          }
+        },
+        "button_jViJLQ": {
+          "type": "button",
+          "settings": {
+            "button_label": "プランツ×プランツ2025",
+            "button_link": "https://leaf-laboratory.com/blogs/media/evny-plantplants",
+            "button_style_secondary": false
+          }
+        }
+      },
+      "block_order": [
+        "heading_zCPFNA",
+        "text_twm6QK",
+        "button_jViJLQ"
+      ],
+      "disabled": true,
+      "settings": {
+        "image": "shopify://shop_images/image0.jpg",
+        "height": "adapt",
+        "desktop_image_width": "medium",
+        "layout": "image_first",
+        "desktop_content_position": "top",
+        "desktop_content_alignment": "left",
+        "content_layout": "no-overlap",
+        "section_color_scheme": "",
+        "color_scheme": "",
+        "image_behavior": "none",
+        "mobile_content_alignment": "left",
+        "padding_top": 56,
+        "padding_bottom": 16
+      }
+    },
+    "custom_liquid_rtKDpa": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "{% render 'recommended-events' %}",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "rich_text_TFeg36": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_pnMwzD": {
+          "type": "heading",
+          "settings": {
+            "heading": "<strong>「アガベ・チタノタ白鯨」売切</strong>",
+            "heading_size": "h2"
+          }
+        }
+      },
+      "block_order": [
+        "heading_pnMwzD"
+      ],
+      "settings": {
+        "desktop_content_position": "center",
+        "content_alignment": "center",
+        "color_scheme": "",
+        "full_width": true,
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "featured_product_38jMHD": {
+      "type": "featured-product",
+      "blocks": {
+        "text_TQdgi8": {
+          "type": "text",
+          "settings": {
+            "text": "{{ section.settings.product.vendor }}",
+            "text_style": "uppercase"
+          }
+        },
+        "title_gT9YED": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h2"
+          }
+        },
+        "price_dqCCif": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant_picker_C6AXpr": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "quantity_selector_NDtw8q": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons_iGheit": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": true
+          }
+        },
+        "share_rQx7Rt": {
+          "type": "share",
+          "settings": {
+            "share_label": "共有"
+          }
+        }
+      },
+      "block_order": [
+        "text_TQdgi8",
+        "title_gT9YED",
+        "price_dqCCif",
+        "variant_picker_C6AXpr",
+        "quantity_selector_NDtw8q",
+        "buy_buttons_iGheit",
+        "share_rQx7Rt"
+      ],
+      "settings": {
+        "product": "agave-titanota-hakugei-whitewhale-b1d1f1h1j1l1n1p1r1t1v1-sdetail1-1",
+        "color_scheme": "",
+        "secondary_background": false,
+        "media_size": "small",
+        "constrain_to_viewport": true,
+        "media_fit": "contain",
+        "media_position": "left",
+        "image_zoom": "lightbox",
+        "hide_variants": false,
+        "enable_video_looping": false,
+        "padding_top": 0,
+        "padding_bottom": 36
+      }
+    },
+    "custom_liquid_BbB9bt": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div class=\"promotion-section\" style=\"text-align: center; padding: 40px; background-color: #f9f9f9;\">\n    <h2 style=\"color: #2d8f7d; font-size: 16px; font-weight: bold; margin-bottom: 10px;\">\n        今なら販売手数料0%！植物販売をオンラインで始めませんか？\n    </h2>\n    <p style=\"font-size: 14px; margin-bottom: 20px; color: #555;\">\n        多肉植物や観葉植物をネットで手軽に販売！<br>\n        初期費用・月額費用は0円。キャンペーン中の手数料0%で<br>\n        赤字リスクを避けながら、自分のお店を全国へ届けましょう。\n    </p>\n    <a href=\"https://leaf-laboratory.com/pages/fee-simulation\" \n       style=\"font-size:14px; display: inline-block; background-color: #2d8f7d; color: #fff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;\">\n        今すぐシミュレーションツールで手数料を確認する →\n    </a>\n</div>",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "custom_liquid_Yzyhky": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<secton class=\"top__bnBc\">\n\t<article class=\"grid__tpn layout__tpn\">\n\n\t\t<a class=\"db dim\" href=\"https://leaf-laboratory.com/blogs/media/agave-titanota-hakugei-whitewhale-b1d1f1h1j1l1n1p1r1t1v1\">\n\t\t\t<div role=\"img__bnBc\" aria-label=\"Seat at Table Solange\" class=\"w-100 h-100 bg-center cover__bnBc\" data-src=\"https://leaf-laboratory.com/cdn/shop/articles/agave-titanota-hakugei.jpg?v=1726758271\" data-widths=\"[180, 220, 300, 360, 460, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]\" data-aspectratio=\"1.6\" data-sizes=\"auto\" style=\"background-image:url(https://leaf-laboratory.com/cdn/shop/articles/agave-titanota-hakugei.jpg?v=1726758271);\">\n\t\t\t</div>\n\t\t\t<h2 class=\"ttp__title\">【植物図鑑】アガベ チタノタ（ティタノータ） 白鯨とは？希少な美しさを放つ多肉植物の魅力</h2>\n\t\t</a>\n\n\t\t<a class=\"db dim\" href=\"https://leaf-laboratory.com/blogs/media/agave-titanota-black-and-blue-b1d1f1h1j1l1n1p1r1t1v1\">\n\t\t\t<div role=\"img__bnBc\" aria-label=\"Seat at Table Solange\" class=\"w-100 h-100 bg-center cover__bnBc\" data-src=\"https://cdn.shopify.com/s/files/1/0658/5332/5495/articles/agave-titanota-black-and-blue-cultivation-guide.jpg?v=1731826905\" data-widths=\"[180, 220, 300, 360, 460, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]\" data-aspectratio=\"1.6\" data-sizes=\"auto\" style=\"background-image:url(https://cdn.shopify.com/s/files/1/0658/5332/5495/articles/agave-titanota-black-and-blue-cultivation-guide.jpg?v=1731826905);\">\n\t\t\t</div>\n\t\t\t<h2 class=\"ttp__title\">【植物図鑑】アガベ・チタノタ 'ブラック・アンド・ブルー'（Agave titanota 'Black and Blue'）とは？神秘的な青黒色を放つ希少な多肉植物の魅力</h2>\n\t\t</a>\n\n\t\t<a class=\"db dim\" href=\"https://leaf-laboratory.com/blogs/media/euphorbia-lactea-b1d1f1h1j1l1n2p6r13t37\">\n\t\t\t<div role=\"img__bnBc\" aria-label=\"Seat at Table Solange\" class=\"w-100 h-100 bg-center cover__bnBc\" data-src=\"https://cdn.shopify.com/s/files/1/0658/5332/5495/files/euphorbia-lactea-b1d1f1h1j1l1n2p6r13t37.jpg?v=1730721567\" data-widths=\"[180, 220, 300, 360, 460, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]\" data-aspectratio=\"1.6\" data-sizes=\"auto\" style=\"background-image:url(https://cdn.shopify.com/s/files/1/0658/5332/5495/files/euphorbia-lactea-b1d1f1h1j1l1n2p6r13t37.jpg?v=1730721567);\">\n\t\t\t</div>\n\t\t\t<h2 class=\"ttp__title\">【植物図鑑】ユーフォルビア・峨眉山（Euphorbia lactea）とは？神秘的な三角柱状の多肉植物の魅力 </h2>\n\t\t</a>\n\n\n\t</article>\n</secton>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 20
+      }
+    },
+    "custom_liquid_tJJft3": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<h2 class=\"mv-ttl mgt30 mgb30\">植物図鑑</h2>\n<ul class=\"card-cat\">\n\n\t\t\t\t<li class=\"card-cali\" width=240px>\n\t\t\t\t\t<a href=\"https://leaf-laboratory.com/blogs/media/agave-potatorum-b1d1f1h1j1l1n1p1r1t1v1\" class=\"card-cali_wp\">\n\t\t\t\t\t\t<img class=\"card-img lazyload fade-in\" src=\"https://cdn.shopify.com/s/files/1/0658/5332/5495/files/agave-potatorum-b1d1f1h1j1l1n1p1r1t1v1.jpg?v=1736753683\"\n\t\t\t\t\t\t\t\tdata-aspectratio=\"1.6\"\n\t\t\t\t\t\t\t\tdata-sizes=\"auto\"\n\t\t\t\t\t\t\t\tloading=\"lazy\"\n\t\t\t\t\t\t\t\talt=\"リーフレの植物図鑑「アガベ・チタノタ '姫巌竜'」\">\n\t\t\t\t\t\t<h3 class=\"card-calinm\">アガベ・チタノタ '姫巌竜'</h3>\n\t\t\t\t\t\t<div class=\"card-filt\"></div>\n\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t\t<li class=\"card-cali\" width=240px>\n\t\t\t\t\t<a href=\"https://leaf-laboratory.com/blogs/media/platycerium-staghorn-fern-b1d1d1f1h1j2l3n7p27r44\" class=\"card-cali_wp\">\n\t\t\t\t\t\t<img class=\"card-img lazyload fade-in\" src=\"https://cdn.shopify.com/s/files/1/0658/5332/5495/files/platycerium-staghorn-fern.jpg?v=1726907964\"\n\t\t\t\t\t\t\t\tdata-aspectratio=\"1.6\"\n\t\t\t\t\t\t\t\tdata-sizes=\"auto\"\n\t\t\t\t\t\t\t\tloading=\"lazy\"\n\t\t\t\t\t\t\t\talt=\"リーフレの植物図鑑「ビカクシダ」\">\n\t\t\t\t\t\t<h3 class=\"card-calinm\">ビカクシダ</h3>\n\t\t\t\t\t\t<div class=\"card-filt\"></div>\n\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t\t<li class=\"card-cali\" width=240px>\n\t\t\t\t\t<a href=\"https://leaf-laboratory.com/blogs/media/agave-titanota-hakugei-whitewhale-b1d1f1h1j1l1n1p1r1t1v1\" class=\"card-cali_wp\">\n\t\t\t\t\t\t<img class=\"card-img lazyload fade-in\" src=\"https://leaf-laboratory.com/cdn/shop/articles/agave-titanota-hakugei.jpg?v=1726758271\"\n\t\t\t\t\t\t\t\tdata-aspectratio=\"1.6\"\n\t\t\t\t\t\t\t\tdata-sizes=\"auto\"\n\t\t\t\t\t\t\t\tloading=\"lazy\"\n\t\t\t\t\t\t\t\talt=\"リーフレの植物図鑑「アガベ・チタノタ '白鯨'」\">\n\t\t\t\t\t\t<h3 class=\"card-calinm\">アガベ・チタノタ '白鯨'</h3>\n\t\t\t\t\t\t<div class=\"card-filt\"></div>\n\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t\t<li class=\"card-cali\" width=240px>\n\t\t\t\t\t<a href=\"https://leaf-laboratory.com/blogs/media/euphorbia-obesa-b1d1f1h1j1l1n2p6r13t37\" class=\"card-cali_wp\">\n\t\t\t\t\t\t<img class=\"card-img lazyload fade-in\" src=\"https://cdn.shopify.com/s/files/1/0658/5332/5495/files/euphorbia-obesa-b1d1f1h1j1l1n2p6r13t37.jpg?v=1727488558\"\n\t\t\t\t\t\t\t\tdata-aspectratio=\"1.6\"\n\t\t\t\t\t\t\t\tdata-sizes=\"auto\"\n\t\t\t\t\t\t\t\tloading=\"lazy\"\n\t\t\t\t\t\t\t\talt=\"リーフレの植物図鑑「ユーフォルビア・オベサ」\">\n\t\t\t\t\t\t<h3 class=\"card-calinm\">ユーフォルビア・オベサ</h3>\n\t\t\t\t\t\t<div class=\"card-filt\"></div>\n\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t\t<li class=\"card-cali\" width=240px>\n\t\t\t\t\t<a href=\"https://leaf-laboratory.com/blogs/media/pachypodium-gracilius-b1d1f1h1j1l1n2p18r35t64\" class=\"card-cali_wp\">\n\t\t\t\t\t\t<img class=\"card-img lazyload fade-in\" src=\"https://leaf-laboratory.com/cdn/shop/articles/Isalo_-_Pachypodium_rosulatum.jpg?v=1726760023\"\n\t\t\t\t\t\t\t\tdata-aspectratio=\"1.6\"\n\t\t\t\t\t\t\t\tdata-sizes=\"auto\"\n\t\t\t\t\t\t\t\tloading=\"lazy\"\n\t\t\t\t\t\t\t\talt=\"リーフレの植物図鑑「グラキリウス」\">\n\t\t\t\t\t\t<h3 class=\"card-calinm\">グラキリウス</h3>\n\t\t\t\t\t\t<div class=\"card-filt\"></div>\n\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t\t<li class=\"card-cali\" width=240px>\n\t\t\t\t\t<a href=\"https://leaf-laboratory.com/blogs/media/cyrtanthus-spiralis-b1d1f1h1j1l1n1p1r3t5\" class=\"card-cali_wp\">\n\t\t\t\t\t\t<img class=\"card-img lazyload fade-in\" src=\"https://cdn.shopify.com/s/files/1/0658/5332/5495/files/cyrtanthus-spiralis.jpg?v=1726968442\"\n\t\t\t\t\t\t\t\tdata-aspectratio=\"1.6\"\n\t\t\t\t\t\t\t\tdata-sizes=\"auto\"\n\t\t\t\t\t\t\t\tloading=\"lazy\"\n\t\t\t\t\t\t\t\talt=\"リーフレの植物図鑑「キルタンサス・スピラリス」\">\n\t\t\t\t\t\t<h3 class=\"card-calinm\">キルタンサス・スピラリス</h3>\n\t\t\t\t\t\t<div class=\"card-filt\"></div>\n\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t\t<li class=\"card-cali\" width=240px>\n\t\t\t\t\t<a href=\"https://leaf-laboratory.com/blogs/media/pachira-aquatica-b1d1f1h1j1l1n2p17r46\" class=\"card-cali_wp\">\n\t\t\t\t\t\t<img class=\"card-img lazyload fade-in\" src=\"https://cdn.shopify.com/s/files/1/0658/5332/5495/articles/pachira-aquatica-b1d1f1h1j1l1n2p17r46_520x500.jpg?v=1727576708\"\n\t\t\t\t\t\t\t\tdata-aspectratio=\"1.6\"\n\t\t\t\t\t\t\t\tdata-sizes=\"auto\"\n\t\t\t\t\t\t\t\tloading=\"lazy\"\n\t\t\t\t\t\t\t\talt=\"リーフレの植物図鑑「パキラ・アクアティカ」\">\n\t\t\t\t\t\t<h3 class=\"card-calinm\">パキラ・アクアティカ</h3>\n\t\t\t\t\t\t<div class=\"card-filt\"></div>\n\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t\t<li class=\"card-cali\" width=240px>\n\t\t\t\t\t<a href=\"https://leaf-laboratory.com/blogs/media/cyrtanthus-spiralis-b1d1f1h1j1l1n1p1r3t5\" class=\"card-cali_wp\">\n\t\t\t\t\t\t<img class=\"card-img lazyload fade-in\" src=\"https://cdn.shopify.com/s/files/1/0658/5332/5495/files/albuca-spiralis.jpg?v=1726970855\"\n\t\t\t\t\t\t\t\tdata-aspectratio=\"1.6\"\n\t\t\t\t\t\t\t\tdata-sizes=\"auto\"\n\t\t\t\t\t\t\t\tloading=\"lazy\"\n\t\t\t\t\t\t\t\talt=\"リーフレの植物図鑑「アルブカ・スピラリス」\">\n\t\t\t\t\t\t<h3 class=\"card-calinm\">アルブカ・スピラリス</h3>\n\t\t\t\t\t\t<div class=\"card-filt\"></div>\n\n\t\t\t\t\t</a>\n\t\t\t\t</li>\n\t\t\t</ul>\n\n<a href=\"https://leaf-laboratory.com/pages/illustrated\" class=\"btns btn-border\"><span>すべての植物図鑑を見る</span></a>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "custom_liquid_8Y6n6b": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "{% render 'flick' %}",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "custom_liquid_MQXqXc": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "settings": {
+        "custom_liquid": "{% render 'top-timeline' %}",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    },
+    "custom_liquid_zDyFyX": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "{% render 'region' %}",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    }
+  },
+  "order": [
+    "custom_liquid_EKEbpR",
+    "rich_text_wU7KgY",
+    "custom_liquid_3ABtCK",
+    "image_with_text_cgCG7T",
+    "custom_liquid_rtKDpa",
+    "rich_text_TFeg36",
+    "featured_product_38jMHD",
+    "custom_liquid_BbB9bt",
+    "custom_liquid_Yzyhky",
+    "custom_liquid_tJJft3",
+    "custom_liquid_8Y6n6b",
+    "custom_liquid_MQXqXc",
+    "custom_liquid_zDyFyX"
+  ]
+}

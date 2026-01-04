@@ -1,0 +1,407 @@
+/*
+.topicsBox{
+	width: 100%;
+	margin: 10px auto;
+}
+
+.topicsItem {
+	width: 96%;
+	margin: 0 auto;
+	padding: 10px 0px;
+	overflow: hidden;
+	position: relative;
+}
+.topicsImage {
+	float: left;
+	width: 100px;
+}
+
+.topicsImage img{
+	width: 99%;
+	height: 99%;
+	width: 100px;
+	border: 1px solid #fff;
+}
+
+.topicsTag{
+	position: absolute;
+	top: 11px;
+	left: 1px;
+	background: #000;
+	padding: 3px;
+
+	font-family: Raleway,sans-serif;
+	text-transform: uppercase;
+	-webkit-transition: background-color .1s linear;
+	transition: background-color .1s linear;
+	white-space: nowrap;
+	font-feature-settings: "palt";
+	font-variant-ligatures: none;
+	border-style: none;
+	font-size: 10px;
+	font-weight: bold;
+	box-sizing: border-box;
+
+}
+
+.topicsTitle {
+	float: right;
+	width : -webkit-calc(100% - 100px) ;
+	width : calc(100% - 100px);
+	padding: 5px;
+}
+
+.tpYmd{
+	font-family: Raleway,sans-serif;
+	text-transform: uppercase;
+	-webkit-transition: background-color .1s linear;
+	transition: background-color .1s linear;
+	white-space: nowrap;
+	font-feature-settings: "palt";
+	font-variant-ligatures: none;
+	border-style: none;
+	font-size: 10px;
+	font-weight: bold;
+	box-sizing: border-box;
+}
+
+.tpTxt{
+	margin-top: 5px;
+	font-family: Raleway,sans-serif;
+	text-transform: uppercase;
+	font-feature-settings: "palt";
+	font-variant-ligatures: none;
+	border-style: none;
+	font-size: 14px;
+	font-weight: bold;
+	box-sizing: border-box;
+}
+
+.swiper-container {
+	width: 100%;
+	height: 300px;
+	margin-left: auto;
+	margin-right: auto;
+	background: #fff;
+	color: #111;
+}
+.swiper-slide {
+	background-size: cover;
+	background-position: center;
+}
+.swiper-slide-inner{
+	padding: 10px 0;
+}
+.gallery-top {
+	height: 80%;
+	width: 100%;
+}
+.gallery-thumbs {
+	font-family: Raleway,sans-serif;
+	text-transform: uppercase;
+	-webkit-transition: background-color .1s linear;
+	transition: background-color .1s linear;
+	white-space: nowrap;
+	font-feature-settings: "palt";
+	font-variant-ligatures: none;
+	border-style: none;
+	font-size: 1.8rem;
+	font-weight: bold;
+	height: 36px;
+	line-height: 36px;
+	box-sizing: border-box;
+	width: 100%;
+}
+.gallery-thumbs .swiper-slide {
+	height: 100%;
+	font-size: 12px;
+	font-weight: 700;
+	text-align: center;
+	color: #111;
+	cursor: pointer;
+	background: #f2f2f2;
+	background-size: cover;
+	background-position: center;
+   width: auto!important;
+   padding: 0px 5px;
+   height: 50px;
+   line-height: 35px;
+	color: #222;
+}
+
+.gallery-thumbs .swiper-slide-thumb-active {
+	opacity: 1;
+	background: #fff;
+	color: #000;
+	position: relative;
+	transition: 0.2s;
+	height: 36px;
+	font-weight: 700;
+}
+
+.gallery-thumbs .swiper-slide-thumb-active::before{
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 2px;
+  bottom: 2px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+  background-color: #490099;
+  box-shadow: 0px -1px 5px 0px #490099;
+}
+*/
+
+
+/*
+トップフリックカルーセル
+--------------------*/
+.list_wrapper{
+  	background: #f2f2f2;
+  	width: 100%;
+    box-sizing: border-box;
+    padding: 50px 0;
+}
+.list_area {
+	overflow: hidden;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+  	background: #fff;
+  	width: 100%;
+  	margin: 10px auto;
+}
+.list_rk_area {
+	width: 32.3%;
+	overflow: hidden;
+}
+.list_rk_box img{
+	width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+.lrk_main,
+.lrk_main2 {
+    display: block!important;
+	float: left;
+	width: 90px;
+	text-align: center;
+	font-size: 7.8rem;
+	font-weight: 600;
+	font-family: 'Reem Kufi', sans-serif;
+    color: #000;
+}
+.list_rk_subbox .lrk_side {
+	float: right;
+	width : calc(100% - 90px);
+	height: 100px;
+	/* 
+	display: flex; 
+	flex-direction: column; 
+	justify-content: center;
+	*/
+
+	line-height: 1.6;
+	letter-spacing: 0.1em;
+	/* 
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	*/
+	padding-top: 15px;
+}
+.lrk_side time{
+	font-size: 12px;
+	font-weight: bold;
+    color: #000;
+}
+.lrk_side .rk-bx {
+	/*
+	font-size:max(1.5vw,10px);
+	*/
+    font-weight: bold;
+	line-height: 1.6;
+    color: #000;
+    overflow: hidden; 
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+@media (max-width: 768px) {
+
+	.list_rk_area {
+		width: 100%;
+	}
+	.lrk_main,
+	.lrk_main2 {
+		float: left;
+		width: 90px;
+		text-align: center;
+		font-size: 40px;
+		font-weight: 600;
+		font-family: 'Reem Kufi', sans-serif;
+	}
+	.list_rk_subbox .lrk_side {
+		float: none;
+		height: 70px;
+		width: 100%;
+　　　　padding-top-top: 0px!important;
+	}
+	.list_rk_img{
+		float: left;
+		width: 150px!important;
+		height: 150px!important;
+		object-fit: cover;
+	}
+	.list_rk_subbox{
+		width 100%;
+	}
+
+}
+
+@media (max-width: 460px) {
+
+	.lrk_side {
+		float: none;
+	}
+	.list_rk_img{
+		float: left;
+		width: 150px!important;
+		height: 150px!important;
+		object-fit: cover;
+	}
+    .lists_slide .lists_sl_li {
+        height: 135px;
+    }
+
+}
+
+@media (max-width: 419px) {
+
+	.list_rk_img{
+		float: none;
+		width: 100%!important;
+		object-fit: cover;
+	}
+	.list_rk_subbox{
+		width :100%;
+	}
+    .list_rk_area{
+        margin-bottom: 10px; 
+    }
+}
+
+body {
+  counter-reset: lrk_main lrk_main2;
+}
+
+.lrk_main:before {
+  counter-increment: lrk_main 1;
+  content: "" counter(lrk_main) " "; 
+}
+
+.lrk_main2:before {
+  counter-increment: lrk_main2 1;    
+  content: "" counter(lrk_main2) " ";
+}
+
+.result_h{
+  display: inline-block;  
+}
+
+/*/トップフリックカルーセル*/
+
+
+
+
+/*side flick*/
+.m_f_box {
+  height: 110px;
+  width: 96%;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  display: block;
+}
+
+.m_f_Image {
+  float: right;
+  height: 120px !important;
+  width: 120px;
+  border: 1px solid #fff;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display:none;
+}
+
+.m_f__image.lazyload {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.m_f_title {
+  float: left;
+  width:100%;
+  /*
+  width: -webkit-calc(100% - 125px);
+  width: calc(100% - 125px);
+  */
+  padding: 15px 5px 5px 5px;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+}
+
+.m_f_ymd {
+  font-family: Raleway,sans-serif;
+  text-transform: uppercase;
+  -webkit-transition: background-color .1s linear;
+  transition: background-color .1s linear;
+  white-space: nowrap;
+  font-feature-settings: "palt";
+  font-variant-ligatures: none;
+  border-style: none;
+  font-size: 12px;
+  color: #fff!important;
+  line-height: 1.75;
+  letter-spacing: .02em;
+  font-family: YuGothic, '游ゴシック Medium', 'Yu Gothic Medium', '游ゴシック体', 'ヒラギノ角ゴ Pro', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', sans-serif;
+
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+.m_f_txt {
+  margin-top: 5px;
+  font-family: Raleway,sans-serif;
+  text-transform: uppercase;
+  font-feature-settings: "palt";
+  font-variant-ligatures: none;
+  border-style: none;
+  font-size: 1.4rem;
+  line-height: 1.75;
+  letter-spacing: .02em;
+  font-family: YuGothic, '游ゴシック Medium', 'Yu Gothic Medium', '游ゴシック体', 'ヒラギノ角ゴ Pro', 'Hiragino Kaku Gothic Pro', 'メイリオ', 'Meiryo', sans-serif;
+  color: #fff!important;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/*/side flick*/
+
+
+
+/* /top flick */

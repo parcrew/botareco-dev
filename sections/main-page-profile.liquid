@@ -1,0 +1,500 @@
+{{ 'section-main-page.css' | asset_url | stylesheet_tag }}
+{{ 'leaflabot-app.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'leaflabot-app.js' | asset_url }}" defer></script>
+
+<style>
+/* ========================================
+   プロフィール編集ページ
+   LIFE LABEL / POPEYE tone
+   ======================================== */
+
+.profile-edit-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.profile-section {
+  background: white;
+  border: 2px solid #111;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+.profile-section h3 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-size: 20px;
+  font-weight: 800;
+  border-bottom: 2px solid #111;
+  padding-bottom: 12px;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #111;
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #111;
+  border-radius: 12px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background: white;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #1B8F5A;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.required {
+  color: #dc2626;
+}
+
+/* 活動タイプ */
+.type-category {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #FAFAF3;
+  border: 2px solid #111;
+  border-radius: 16px;
+}
+
+.type-category h4 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+}
+
+.type-category label {
+  display: block;
+  margin-bottom: 12px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+}
+
+.type-category input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+/* 店舗トグル */
+.toggle-label {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+  padding: 16px;
+  border: 2px solid #111;
+  border-radius: 16px;
+  background: white;
+  transition: all 0.2s;
+}
+
+.toggle-label:hover {
+  background: #FAFAF3;
+}
+
+.toggle-label input[type="checkbox"] {
+  margin-right: 12px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* 店舗情報セクション */
+#shop-info-section {
+  margin-top: 24px;
+  padding: 24px;
+  background: #FAFAF3;
+  border: 2px solid #111;
+  border-radius: 16px;
+}
+
+#shop-info-section h4 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+  border-bottom: 2px dotted #111;
+  padding-bottom: 12px;
+}
+
+/* ボタン */
+.form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.btn {
+  padding: 14px 36px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: white;
+  color: #111;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: #111;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #000;
+}
+
+.btn-primary:disabled {
+  background: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: white;
+  color: #111;
+}
+
+.btn-secondary:hover {
+  background: #FAFAF3;
+}
+
+/* アバター */
+.avatar-preview-container {
+  margin: 16px 0;
+}
+
+.avatar-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #111;
+  display: block;
+}
+
+/* メッセージ */
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+}
+
+.success-message {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  border: 2px solid #10b981;
+  font-weight: 600;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #7f1d1d;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  border: 2px solid #dc2626;
+  font-weight: 600;
+}
+
+.help-text {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .profile-edit-container {
+    padding: 16px;
+  }
+  
+  .profile-section {
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}
+
+.btn-container {
+  display: flex;
+  gap: 16px; 
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.btn-neo-style {
+  display: inline-block;
+  border: 2px solid #111;
+  border-radius: 16px;
+  padding: 20px;
+  background: white;
+  color: #111;
+  transition: all 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.btn-neo-style:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 0 #111;
+}
+
+
+/* ========================================
+   出店イベント選択
+   ======================================== */
+
+.event-selection-section {
+  margin-top: 32px;
+  padding: 24px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+}
+
+.event-search-box {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.event-search-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #111;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.event-search-btn {
+  padding: 12px 24px;
+  background: #1B8F5A;
+  color: white;
+  border: 2px solid #111;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.event-search-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 #111;
+}
+
+.event-results {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.event-result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.event-result-info {
+  flex: 1;
+}
+
+.event-result-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.event-result-date {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.event-add-btn {
+  padding: 8px 16px;
+  background: #1B8F5A;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.event-add-btn:hover {
+  background: #166d44;
+}
+
+.event-add-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.selected-events {
+  margin-top: 20px;
+}
+
+.selected-event-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #dcfce7;
+  border: 2px solid #1B8F5A;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.selected-event-info {
+  flex: 1;
+}
+
+.event-remove-btn {
+  padding: 6px 12px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.event-remove-btn:hover {
+  background: #dc2626;
+}
+
+.empty-state-small {
+  text-align: center;
+  padding: 20px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+</style>
+
+
+{% render 'botareco-header' %}
+
+
+<div id="profile-edit-root" class="profile-edit-container">
+  <div class="loading">読み込み中...</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  window.PROFILE_EDIT_CONFIG = {
+    userEmail: {{ customer.email | json }},
+    customerFirstName: {{ customer.first_name | json }},
+    customerLastName: {{ customer.last_name | json }},
+    supabaseUrl: 'https://laixgcjvowdszrtdpxlq.supabase.co',
+    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhaXhnY2p2b3dkc3pydGRweGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NTM5MTIsImV4cCI6MjA2MTIyOTkxMn0.yAvMili-p_uQMHYlz-fpErgFqX243J5z1zI87VqO63M'
+  };
+</script>
+
+{{ 'profile-edit.js' | asset_url | script_tag }}
+
+
+
+<div class="main-page-wide section-{{ section.id }}-padding">
+  <div class="rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    {{ page.content }}
+    
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
+    }
+  ]
+}
+{% endschema %}

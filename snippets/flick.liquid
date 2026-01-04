@@ -1,0 +1,355 @@
+    <style>
+        /* Swiperスライダー全般のスタイル */
+        .swiper-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 親スライダーのスタイル */
+        .gallery-top {
+            height: 50%;
+            width: 100%;
+        }
+
+        .gallery-thumbs {
+            height: 10%;
+            box-sizing: border-box;
+            padding: 10px 0;
+        }
+
+        .gallery-thumbs .swiper-slide {
+            width: auto;
+            height: 100%;
+            opacity: 0.4;
+        }
+
+        .gallery-thumbs .swiper-slide-thumb-active {
+            opacity: 1;
+            color: #000;
+            position: relative;
+            transition: 0.2s;
+            height: 40px;
+            font-weight: 700;
+            background: #fff;
+            line-height: 35px;
+        }
+
+        .swiper-slide-thumb-active::before {
+            content: "";
+            position: absolute;
+            width: 28px;
+            height: 2px;
+            bottom: 2px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            background-color: #490099;
+            box-shadow: 0px -1px 5px 0px #490099;
+        }
+        /* 入れ子スライダーのスタイル */
+        .swiper-slide-inner .swiper-slide {
+            width: 190px;
+            margin-right: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-sizing: border-box;
+    box-shadow: 2px 2px 8px #ddd;
+    border-radius: 8px;
+        }
+
+        .swiper-slide-inner .swiper-slide:last-child {
+            margin-right: 0;
+        }
+
+.swiper-slide-inner .causel_content_wrap {
+    height: 50px;
+    width: 100%;
+}
+
+
+        .swiper-slide-inner .nb_area {
+            position: relative;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .swiper-slide-inner .nb_area img {
+            position: absolute;
+            top: 2px;
+            left: 2px;/*
+            width: 100%;
+     height: 100%; */
+    height: 35px;
+            object-fit: contain;
+            background-color: #fff;
+        }
+
+        .swiper-slide-inner .slide-content {
+            padding: 15px;
+        }
+
+        .slide-title {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .slide-date {
+            font-size: 0.9em;
+            color: #bbb;
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: #000;
+        }
+/* gallery-thumbs のスタイル調整 */
+.gallery-thumbs .swiper-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+
+.gallery-thumbs .swiper-slide {
+    height: 100%;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    /* background: #000; */
+    width: auto !important;
+    padding: 0 10px;
+    color: #000;
+}
+    </style>
+
+
+<div class="top_car_area">
+  <!-- 親スライダー -->
+  <div class="box__area">
+    <div class="main__boxs">
+      <div class="arrow--01">
+      </div>
+      <h2 class="mv-ttl mgt30">植物に関する<br>最新情報・ニュース</h2>
+      <div class="topicsBox">
+        <div class="swiper-container gallery-thumbs top">
+          <div class="swiper-wrapper">
+<!--
+            <div class="swiper-slide swiper-slide-sb">新着順</div>
+            <div class="swiper-slide swiper-slide-sb">ITニュース</div>
+            <div class="swiper-slide swiper-slide-sb">イベント・セミナー</div>
+            <div class="swiper-slide swiper-slide-sb">カテゴリ別</div> -->
+          </div>
+        </div>
+        <div class="swiper-container gallery-top">
+          <div class="swiper-wrapper">
+            <!-- 新着順 1つ目のスライド -->
+            <div class="swiper-slide swiper-slide-inner">
+              <div class="an_section">
+                <div class="news-wrap">{% assign featuredBlogs = "media" | split:',' %} {% assign article_list = '' %} {% for featuredBlog in featuredBlogs %} {% if blogs[featuredBlog].articles %} {% if featuredArticles %} {% assign featuredArticles = featuredArticles | concat:blogs[featuredBlog].articles %} {% else %} {% assign featuredArticles = blogs[featuredBlog].articles %} {% endif %} {% endif %} {% endfor %} {% if featuredArticles %} {% assign featuredArticles = featuredArticles | sort:'updated_at' | reverse %} {% for article in featuredArticles limit:18 %}
+                  <a href="{{ article.url }}" class="news-area">
+                    <div class="border-animation">
+                    </div>
+                    <div class="news-box">
+                      <div class="news-list">
+                        <div class="news-side">
+                          <div class="news-bx">{{ article.title }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="lis_other">
+                      <ul class="lis_act_pub">
+                        <li class="lis_li">
+                          <img class="avatar_img" src="https:{{ article.image | img_url: 'master' }}" alt="{{ article.title }} - リーフラ編集部">
+                        </li>
+                        <li class="lis_li_ava">
+                          <span class="an">リーフラ編集部</span>
+                        </li>
+
+<li class="lis_li_time">
+  <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}" itemprop="datepublished">
+    {{ article.published_at | date: "%Y年%m月%d日" }}
+  </time>
+</li>
+                      </ul>
+                    </div>
+                  </a>{% endfor %} {% endif %}
+
+<a href="https://leaf-laboratory.com/blogs/media" class="btns btn-border"><span>すべての最新情報を見る</span></a>
+                </div>
+              </div>
+            </div>
+            <!-- /新着順 1つ目のスライド -->
+            <!-- ITニュース 2つ目のスライド
+            <div class="swiper-slide swiper-slide-inner">
+              入れ子2
+              <div class="an_section">
+                <div class="news-wrap">{% assign count1 = 0 %} {% paginate blogs.media.articles by 1000 %} {% for article in blogs['media'].articles %} {% for tag in article.tags %} {% if tag == '_topics' %} {% assign count1 = count1 | plus:1 %}
+                  <a href="%7B%7B%20article.url%20%7D%7D" class="news-area">
+                    <div class="border-animation">
+                    </div>
+                    <div class="news-box">
+                      <div class="news-list">
+                        <div class="news-side">
+                          <div class="news-bx">{{ article.title }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="lis_other">
+                      <ul class="lis_act_pub">
+                        <li class="lis_li">
+                          <img class="avatar_img" src="//cdn.shopify.com/s/files/1/0606/3626/6733/%7B%7B%20articles%5Barticle_handle%5D.image%20%7D%7D" alt="{{ article.metafields.custom.__authorName }}">
+                        </li>
+                        <li class="lis_li_ava">
+                          <span class="an">{{ article.metafields.custom.__authorName }}</span>
+                        </li>
+                        <li class="lis_li_time">
+                          <time datetime="{{ article.metafields.custom._dateCreated }}" itemprop="datepublished">{{ article.metafields.custom._dateCreated | date: "%Y年%m月%d日" }}</time>
+                        </li>
+                      </ul>
+                    </div>
+                  </a>{% endif %} {% if count1==6 %} {% break %} {% endif %} {% endfor %} {% if count1==6 %} {% break %} {% endif %} {% endfor %} {% endpaginate %}
+                  <a href="https://xexeq.jp/blogs/media/tagged/_topics" class="cs-footer-link">ITニュースの最新情報を見る</a>
+                </div>
+              </div>
+            </div>
+            /ITニュース 2つ目のスライド
+            イベント・セミナー 3つ目のスライド
+            <div class="swiper-slide swiper-slide-inner">
+              入れ子2
+              <div class="an_section">
+                <div class="news-wrap">{% assign count2 = 0 %} {% paginate blogs.media.articles by 1000 %} {% for article in blogs['media'].articles %} {% for tag in article.tags %} {% if tag == '_online' %} {% assign count2 = count2 | plus:1 %}
+                  <a href="%7B%7B%20article.url%20%7D%7D" class="news-area">
+                    <div class="border-animation">
+                    </div>
+                    <div class="news-box">
+                      <div class="news-list">
+                        <div class="news-side">
+                          <div class="news-bx">{{ article.title }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="lis_other">
+                      <ul class="lis_act_pub">
+                        <li class="lis_li">
+                          <img class="avatar_img" src="//cdn.shopify.com/s/files/1/0606/3626/6733/%7B%7B%20articles%5Barticle_handle%5D.image%20%7D%7D" alt="{{ article.metafields.custom.__authorName }}">
+                        </li>
+                        <li class="lis_li_ava">
+                          <span class="an">{{ article.metafields.custom.__authorName }}</span>
+                        </li>
+                        <li class="lis_li_time">
+                          <time datetime="{{ article.metafields.custom._dateCreated }}" itemprop="datepublished">{{ article.metafields.custom._dateCreated | date: "%Y年%m月%d日" }}</time>
+                        </li>
+                      </ul>
+                    </div>
+                  </a>{% endif %} {% if count2==6 %} {% break %} {% endif %} {% endfor %} {% if count2==6 %} {% break %} {% endif %} {% endfor %} {% endpaginate %}
+                  <a href="https://xexeq.jp/blogs/media/seminar-list" class="cs-footer-link">イベント・セミナーの最新情報を見る</a>
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+        <div class="arrow1">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+       var galleryThumbs = new Swiper('.gallery-thumbs', {
+            spaceBetween: 10,
+            slidesPerView: 'auto',
+            loop: false,
+ autoHeight: !0,
+            watchSlidesVisibility: true,
+            watchSlidesProgress: true,
+            nested: true,
+        });
+
+        var galleryTop = new Swiper('.gallery-top', {
+            spaceBetween: 10,
+            loop: true,
+            autoHeight: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            thumbs: {
+                swiper: galleryThumbs,
+            },
+            on: {
+                init: function () {
+                    this.updateAutoHeight();
+                },
+                slideChange: function () {
+                    this.updateAutoHeight();
+                }
+            }
+        });
+
+        var innerSlider1 = new Swiper('.inner-slider-1', {
+            slidesPerView: 'auto',
+            spaceBetween: 10,
+            navigation: {
+                nextEl: '.inner-next',
+                prevEl: '.inner-prev',
+            },
+            loop: false,
+            freeMode: true,
+            grabCursor: true,
+            nested: true,
+        });
+    </script>
+
+
+
+<script>
+$( '.top, .bottom, top-a' ).fixedsticky();
+</script>
+
+<script>
+       var galleryThumbs = new Swiper('.gallery-thumbs', {
+            spaceBetween: 10,
+            slidesPerView: 'auto',
+            loop: false,
+ autoHeight: !0,
+            watchSlidesVisibility: true,
+            watchSlidesProgress: true,
+            nested: true,
+        });
+
+        var galleryTop = new Swiper('.gallery-top', {
+            spaceBetween: 10,
+            loop: true,
+            autoHeight: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            thumbs: {
+                swiper: galleryThumbs,
+            },
+            on: {
+                init: function () {
+                    this.updateAutoHeight();
+                },
+                slideChange: function () {
+                    this.updateAutoHeight();
+                }
+            }
+        });
+
+        var innerSlider1 = new Swiper('.inner-slider-1', {
+            slidesPerView: 'auto',
+            spaceBetween: 10,
+            navigation: {
+                nextEl: '.inner-next',
+                prevEl: '.inner-prev',
+            },
+            loop: false,
+            freeMode: true,
+            grabCursor: true,
+            nested: true,
+        });
+    </script>
+

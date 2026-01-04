@@ -1,0 +1,352 @@
+{%- comment -%} snippets/botareco-header.liquid {%- endcomment -%}
+
+{%- comment -%} ===== CSS読み込み（最初に） ===== {%- endcomment -%}
+{{ 'leaflabot-app.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%} ===== LEAFLA基本設定（重要：他のスクリプトより先に） ===== {%- endcomment -%}
+<script>
+window.LEAFLA = {
+  isLoggedIn: {% if customer %}true{% else %}false{% endif %},
+  customerEmail: {% if customer %}{{ customer.email | json }}{% else %}null{% endif %},
+  
+  entitlement: {% if customer.tags contains 'leafla_paid' and customer.metafields.leafla.membership_plan %}
+    {% assign expires_at = customer.metafields.leafla.membership_expires_at %}
+    {% assign now = 'now' | date: '%s' %}
+    {% assign expires_timestamp = expires_at | date: '%s' %}
+    {% if expires_timestamp > now %}
+    {
+      "status": "active",
+      "plan_code": "{{ customer.metafields.leafla.membership_plan }}",
+      "expires_at": "{{ expires_at }}"
+    }
+    {% else %}
+    null
+    {% endif %}
+  {% else %}
+  null
+  {% endif %},
+  
+  customer: {
+    {% if customer %}
+      email: {{ customer.email | json }},
+      id: {{ customer.id | json }},
+      first_name: {{ customer.first_name | json }},
+      last_name: {{ customer.last_name | json }},
+      tags: {{ customer.tags | json }},
+      created_at: {{ customer.created_at | json }},
+      default_address: {{ customer.default_address | json }}
+    {% else %}
+      email: null,
+      id: null,
+      first_name: null,
+      last_name: null,
+      tags: [],
+      created_at: null,
+      default_address: null
+    {% endif %}
+  },
+  
+  shop: {
+    domain: {{ shop.domain | json }},
+    name: {{ shop.name | json }},
+    currency: {{ shop.currency | json }},
+    timezone: {{ shop.timezone | json }}
+  },
+  
+  page: {
+    title: {{ page.title | json }},
+    url: {{ page.url | json }},
+    id: {{ page.id | json }}
+  },
+  
+  config: {
+    version: '4.0.0-membership-enhanced-seasonal',
+    api_base: 'https://laixgcjvowdszrtdpxlq.functions.supabase.co/analyze-oai',
+    supabase_url: 'https://laixgcjvowdszrtdpxlq.supabase.co',
+    supabase_key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhaXhnY2p2b3dkc3pydGRweGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NTM5MTIsImV4cCI6MjA2MTIyOTkxMn0.yAvMili-p_uQMHYlz-fpErgFqX243J5z1zI87VqO63M',
+    max_image_size: 10485760,
+    supported_formats: ['image/jpeg', 'image/png', 'image/webp']
+  },
+  
+  features: {
+    membership_types: {
+      non_member: { storage: false, image_gen: false, api: 'free', plant_limit: 0, care_alerts: false },
+      free_member: { storage: true, image_gen: false, api: 'free', plant_limit: 20, care_alerts: false },
+      paid_member: { storage: true, image_gen: true, api: 'paid', plant_limit: 50, care_alerts: true }
+    },
+    post_limit_per_thread: 5,
+    summary_export: true,
+    care_records: true,
+    seasonal_care_intervals: true,
+    text_free_illustration: true
+  },
+  
+  limits: {
+    non_member: { posts: 5, storage: false, image_gen: false, plants: 0, care_alerts: false },
+    free_member: { posts: 999, storage: true, image_gen: false, plants: 20, care_alerts: false },
+    paid_member: { posts: 999, storage: true, image_gen: true, plants: 50, care_alerts: true }
+  }
+};
+
+console.log('✅ LEAFLA初期化完了:', window.LEAFLA);
+</script>
+
+<!-- ===== 共通ヘッダー ===== -->
+<header class="br-header" role="banner">
+<div class="br-header-inner">
+  <a href="/" class="br-logo" aria-label="BotaReco トップへ">
+    <img src="https://cdn.shopify.com/s/files/1/0658/5332/5495/files/botanical-record-head_3e92563d-0904-49c8-a57d-847a3462bf41.png?v=1767109326" class="br-logos" alt="">
+  </a>
+
+  <nav class="br-nav" aria-label="ユーザメニュー">
+    <button id="brUserBtn" class="br-user-btn" aria-haspopup="dialog" aria-expanded="false">
+      <span class="br-user-name" id="brUserName">test さん</span>
+      <svg class="br-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"></path></svg>
+    </button>
+
+    <div id="brUserPopover" class="br-popover" role="dialog" aria-modal="true" hidden>
+      <div class="br-popover-head">
+        <h3>アカウント</h3>
+        <button class="br-x" data-close>×</button>
+      </div>
+
+      <div class="br-popover-body">
+        <div class="br-summary">
+          <div class="br-summary-primary">
+            <div class="br-hello">
+              <span class="br-hello-label">ようこそ</span>
+              <strong class="br-hello-name" id="brSummaryName">ボタ活 さん</strong>
+            </div>
+            <div class="br-badges">
+              <span class="br-badge" id="brPlanBadge">有料会員</span>
+              <span class="br-badge" id="brSeasonBadge">🍂 秋</span>
+            </div>
+          </div>
+
+          <div class="br-stats">
+            <div class="br-stat">
+              <span class="br-stat-kv"><strong id="brTotalRecords">0</strong><small>件</small></span>
+              <span class="br-stat-label">育成記録</span>
+            </div>
+            <div class="br-stat">
+              <span class="br-stat-kv"><strong id="brConsultations">0</strong></span>
+              <span class="br-stat-label">相談植物</span>
+            </div>
+            <div class="br-stat">
+              <span class="br-stat-kv"><strong id="brPeriod">—</strong></span>
+              <span class="br-stat-label">記録期間</span>
+            </div>
+            <button class="br-stat br-link" id="brTodayCareBtn">
+              <span class="br-stat-kv"><strong id="brTodayCare">0</strong></span>
+              <span class="br-stat-label">今日のケア</span>
+            </button>
+          </div>
+
+          <div class="br-quotas" id="brQuotas"></div>
+        </div>
+
+        <div class="br-actions">
+          <a href="/pages/botareco" class="br-action">🌱 植物の相談・成長を記録する</a>
+          <a href="/pages/my-page" class="br-action">🏠 マイページ</a>
+          <a href="#" id="my-profile-link" class="br-action">📄 自分のプロフィール</a>
+          <a href="/pages/profile-edit" class="br-action">⚙️ プロフィール編集</a>
+          <button class="br-action subtle" data-close>閉じる</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+</header>
+
+<!-- ===== シート（モーダル） ===== -->
+<section id="brSheet" class="br-sheet" aria-hidden="true">
+<div class="br-sheet-content" role="dialog" aria-modal="true">
+  <header class="br-sheet-head">
+    <h3 id="brSheetTitle">詳細</h3>
+    <button class="br-x" data-sheet-close>×</button>
+  </header>
+  <div id="brSheetBody" class="br-sheet-body"></div>
+</div>
+<div class="br-sheet-backdrop" data-sheet-close></div>
+</section>
+
+{%- comment -%} ===== プロフィールリンク設定 ===== {%- endcomment -%}
+<script>
+(function(){
+  var userEmail = window.LEAFLA.customerEmail;
+  if (!userEmail) return;
+  
+  fetch('https://laixgcjvowdszrtdpxlq.supabase.co/functions/v1/process-consultation?action=get_user_profile', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhaXhnY2p2b3dkc3pydGRweGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NTM5MTIsImV4cCI6MjA2MTIyOTkxMn0.yAvMili-p_uQMHYlz-fpErgFqX243J5z1zI87VqO63M'
+    },
+    body: JSON.stringify({ user_email: userEmail })
+  })
+  .then(function(response) { return response.json(); })
+  .then(function(data) {
+    if (data.success && data.profile && data.profile.username) {
+      var profileLink = document.getElementById('my-profile-link');
+      if (profileLink) {
+        profileLink.href = '/pages/community?user=' + encodeURIComponent(data.profile.username);
+      }
+    }
+  })
+  .catch(function(error) {
+    console.error('プロフィールリンク設定エラー:', error);
+  });
+})();
+</script>
+
+{%- comment -%} ===== ヘッダー操作スクリプト ===== {%- endcomment -%}
+<script>
+(function(){
+  var LEAFLA = window.LEAFLA || {};
+  var apiBase = LEAFLA.config && LEAFLA.config.api_base;
+  var userEmail = LEAFLA.customerEmail;
+  
+  function $(id){ return document.getElementById(id); }
+  var currentStatKind = null;
+  
+  function openSheet(){
+    var sheet = $('brSheet');
+    if(!sheet) return;
+    sheet.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeSheet(){
+    var sheet = $('brSheet');
+    if(!sheet) return;
+    sheet.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+  
+  function switchTabWhenReady(targetTab){
+    if (!targetTab) return;
+    var tries = 20;
+    var interval = setInterval(function(){
+      var selector = '.tab-navigation .tab-btn[data-tab="' + targetTab + '"]';
+      var btn = document.querySelector(selector);
+      if (btn) {
+        btn.click();
+        clearInterval(interval);
+        return;
+      }
+      tries--;
+      if (tries <= 0) clearInterval(interval);
+    }, 200);
+  }
+  
+  function openSheetWithList(kind, title){
+    var sheetTitle = $('brSheetTitle');
+    var sheetBody = $('brSheetBody');
+    if(!sheetTitle || !sheetBody) return;
+    
+    currentStatKind = kind;
+    openSheet();
+    sheetTitle.textContent = title;
+    
+    if(!apiBase || !userEmail){
+      sheetBody.innerHTML = '<p>ログイン時のみ一覧を表示できます。</p>';
+      return;
+    }
+    
+    var url = apiBase + '?action=header_stat_list&kind=' + encodeURIComponent(kind) + '&user_email=' + encodeURIComponent(userEmail);
+    sheetBody.innerHTML = '<p>読み込み中...</p>';
+    
+    fetch(url, { method: 'GET', headers: {'Accept':'application/json'} })
+    .then(function(res){ return res.json(); })
+    .then(function(json){
+      var items = (json && (json.items || json.data || json)) || [];
+      if(!items.length){
+        sheetBody.innerHTML = '<p>該当する植物がありません。</p>';
+        return;
+      }
+      
+      var html = '<ul class="br-plant-list">';
+      for(var i=0; i<items.length; i++){
+        var p = items[i];
+        var name = p.name || p.plant_name || '名前未設定';
+        var img = p.thumbnail_url || p.image_url || p.photo || '';
+        var tid = p.thread_id || p.plant_id || p.id;
+        if (!tid) continue;
+        
+        html += '<li class="br-plant-item">';
+        html += '<button type="button" class="br-plant-link" data-thread-id="' + tid + '" data-plant-name="' + name + '" data-plant-img="' + (img || '') + '">';
+        if(img) html += '<img class="br-plant-thumb" src="' + img + '" alt="' + name + '">';
+        html += '<span class="br-plant-name">' + name + '</span>';
+        html += '</button></li>';
+      }
+      html += '</ul>';
+      sheetBody.innerHTML = html;
+    })
+    .catch(function(err){
+      sheetBody.innerHTML = '<p>一覧の取得に失敗しました。</p>';
+    });
+  }
+  
+  document.addEventListener('click', function(e){
+    var t = e.target || e.srcElement;
+    
+    if(t.matches && (t.matches('[data-sheet-close]') || (t.closest && t.closest('[data-sheet-close]')) || t.matches('.br-sheet-backdrop'))){
+      e.preventDefault();
+      closeSheet();
+      return;
+    }
+    
+    if(t.closest && t.closest('.br-stat') && t.closest('.br-stat').querySelector('#brTotalRecords')){
+      e.preventDefault();
+      openSheetWithList('growth_records', '育成記録の植物');
+      return;
+    }
+    
+    if(t.closest && t.closest('.br-stat') && t.closest('.br-stat').querySelector('#brConsultations')){
+      e.preventDefault();
+      openSheetWithList('consult_plants', '相談した植物');
+      return;
+    }
+    
+    if(t.closest && t.closest('.br-stat') && t.closest('.br-stat').querySelector('#brPeriod')){
+      e.preventDefault();
+      openSheetWithList('care_period', '記録期間の植物');
+      return;
+    }
+    
+    var plantBtn = t.closest && t.closest('.br-plant-link');
+    if (plantBtn) {
+      e.preventDefault();
+      var tid = plantBtn.getAttribute('data-thread-id');
+      var name = plantBtn.getAttribute('data-plant-name') || '名前未設定';
+      var img = plantBtn.getAttribute('data-plant-img') || null;
+      if (!tid) return;
+      
+      if (window.plantApp) {
+        if (!Array.isArray(window.plantApp.existingPlants)) {
+          window.plantApp.existingPlants = [];
+        }
+        var found = window.plantApp.existingPlants.some(function(p){ return p && p.id === tid; });
+        if (!found) {
+          window.plantApp.existingPlants.push({ id: tid, plant_name: name, cover_image_url: img });
+        }
+        if (typeof window.plantApp.openPlantRecord === 'function') {
+          window.plantApp.openPlantRecord(tid);
+          closeSheet();
+          var targetTab = null;
+          if (currentStatKind === 'growth_records') targetTab = 'timeline';
+          else if (currentStatKind === 'consult_plants') targetTab = 'growth-comparison';
+          else if (currentStatKind === 'care_period') targetTab = 'care-log';
+          switchTabWhenReady(targetTab);
+          return;
+        }
+      }
+      window.location.href = '/apps/leafla/plants/' + tid;
+      return;
+    }
+  });
+})();
+</script>
+
+{%- comment -%} ===== JavaScript本体読み込み ===== {%- endcomment -%}
+<script src="{{ 'leaflabot-app.js' | asset_url }}" defer></script>

@@ -1,0 +1,959 @@
+{%- comment -%} custom-product.liquid {%- endcomment -%}
+
+<style>
+/* 花束カスタマイザー用スタイル */
+.flower-custom-options {
+  margin: 20px 0;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+}
+
+.option-section {
+  margin-bottom: 24px;
+}
+
+.option-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.plant-group {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+}
+
+.plant-group__title {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.option-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.variant-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.option-value {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background: #f8f8f8;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  gap: 12px;
+}
+
+.option-value:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.option-image {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
+}
+
+.option-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.option-details {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.option-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.option-checkbox input[type="checkbox"] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.option-quantity {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quantity-input {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.quantity-input:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.quantity-label {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.plant-group__subtotal {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #f8f8f8;
+  border-radius: 4px;
+  text-align: right;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.quantity-summary {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.total-quantity {
+  margin-bottom: 15px;
+  padding: 12px;
+  background: #f8f8f8;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: right;
+}
+
+.total-price {
+  margin-top: 5px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.button-group {
+  display: grid;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.button:hover {
+  background-color: #45a049;
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button--secondary {
+  background-color: #666;
+}
+
+.button--secondary:hover {
+  background-color: #555;
+}
+
+/* モーダル用のスタイル */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  overflow-y: auto;
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.close:hover {
+  color: #333;
+}
+
+.inquiry-form {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.required {
+  color: #ff0000;
+  margin-left: 2px;
+}
+
+#selected-items-summary {
+  margin: 15px 0;
+  padding: 15px;
+  background: #f8f8f8;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+#selected-items-summary ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+#selected-items-summary li {
+  margin-bottom: 5px;
+}
+
+/* レスポンシブ対応 */
+@media screen and (max-width: 768px) {
+  .option-group {
+    grid-template-columns: 1fr;
+  }
+  
+  .option-value {
+    width: 100%;
+  }
+
+  .quantity-input {
+    width: 50px;
+  }
+  
+  .modal-content {
+    margin: 5% auto;
+    width: 95%;
+    padding: 15px;
+  }
+  
+  .plant-group {
+    padding: 15px;
+  }
+}
+</style>
+
+<product-info
+  id="MainProduct-{{ section.id }}"
+  class="section-{{ section.id }}-padding gradient color-{{ section.settings.color_scheme }}"
+  data-section="{{ section.id }}"
+  data-product-id="{{ product.id }}"
+  data-update-url="true"
+  data-url="{{ product.url }}"
+  {% if section.settings.image_zoom == 'hover' %}
+    data-zoom-on-hover
+  {% endif %}
+>
+  {{ 'section-main-product.css' | asset_url | stylesheet_tag }}
+  {{ 'component-accordion.css' | asset_url | stylesheet_tag }}
+  {{ 'component-price.css' | asset_url | stylesheet_tag }}
+  {{ 'component-slider.css' | asset_url | stylesheet_tag }}
+  {{ 'component-rating.css' | asset_url | stylesheet_tag }}
+  {{ 'component-deferred-media.css' | asset_url | stylesheet_tag }}
+
+  {% unless product.has_only_default_variant %}
+    {{ 'component-product-variant-picker.css' | asset_url | stylesheet_tag }}
+  {% endunless %}
+
+  <div class="page-width">
+    <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
+      <div class="grid__item product__media-wrapper">
+        {% render 'product-media-gallery', variant_images: variant_images %}
+      </div>
+      
+      <div class="product__info-wrapper grid__item">
+        <section
+          id="ProductInfo-{{ section.id }}"
+          class="product__info-container{% if section.settings.enable_sticky_info %} product__column-sticky{% endif %}"
+        >
+          {%- assign product_form_id = 'product-form-' | append: section.id -%}
+
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when '@app' -%}
+                {% render block %}
+              
+              {%- when 'text' -%}
+                <p class="product__text" {{ block.shopify_attributes }}>
+                  {{- block.settings.text -}}
+                </p>
+              
+              {%- when 'title' -%}
+                <h1>{{ product.title | escape }}</h1>
+              
+              {%- when 'price' -%}
+                <div data-product-price="{{ product.price }}">
+                  {%- render 'price',
+                    product: product,
+                    use_variant: true,
+                    show_badges: true,
+                    price_class: 'price--large'
+                  -%}
+                </div>
+              
+              {%- when 'variant_picker' -%}
+                {% if product.product_type == '花束' or product.tags contains '花束' %}
+                  <div id="custom-flower-selector" class="flower-custom-options">
+                    <form id="flower-custom-form" class="flower-form">
+                      <input type="hidden" name="id" id="variant-id" value="{{ product.selected_or_first_available_variant.id }}">
+                      
+                      <div class="flower-options">
+                        <div class="option-section">
+                          <h3 class="option-title">植物選択</h3>
+                          {% comment %} 最初のオプション（植物名）でグループ化 {% endcomment %}
+                          {% assign plant_options = product.options_with_values | where: "name", "植物名" | first %}
+                          
+                          {% for option in product.options_with_values %}
+                            {% if option.name == "植物名" %}
+                              {% for value in option.values %}
+                                <div class="plant-group" data-plant="{{ value }}">
+                                  <h4 class="plant-group__title">
+                                    {{ value }}
+                                    <span class="plant-group__subtitle">色を選択してください</span>
+                                  </h4>
+                                  <div class="variant-list">
+                                  {% for variant in product.variants %}
+                                    {% if variant.option1 == value %}
+                                      {% assign variant_image = variant.image | default: variant.featured_image | default: product.featured_image %}
+                                      <div class="option-value has-image">
+                                        {% if variant_image %}
+                                          <div class="option-image">
+                                            <img src="{{ variant_image | img_url: '100x100', crop: 'center' }}" 
+                                                 alt="{{ variant.title }}"
+                                                 loading="lazy"
+                                                 width="50"
+                                                 height="50">
+                                          </div>
+                                        {% endif %}
+                                        <div class="option-details">
+                                          <div class="option-checkbox">
+                                            <input type="checkbox" 
+                                              id="variant-{{ variant.id }}"
+                                              name="properties[{{ value }}][]" 
+                                              value="{{ variant.option2 }}"
+                                              class="variant-selector"
+                                              data-variant-id="{{ variant.id }}"
+                                              data-plant="{{ value }}"
+                                              data-price="{{ variant.price }}"
+                                              data-color="{{ variant.option2 }}"
+                                              data-inventory="{{ variant.inventory_quantity }}"
+                                              {% if variant.available == false %}disabled{% endif %}>
+                                            <label for="variant-{{ variant.id }}">{{ variant.option2 }}</label>
+                                          </div>
+                                          <div class="option-quantity">
+                                            <input type="number"
+                                              id="qty-{{ variant.id }}"
+                                              name="properties[{{ value }}_{{ variant.option2 }}_quantity]"
+                                              value="1"
+                                              min="1"
+                                              max="{{ variant.inventory_quantity }}"
+                                              class="quantity-input"
+                                              disabled
+                                              data-price="{{ variant.price }}">
+                                            <span class="quantity-label">本</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    {% endif %}
+                                  {% endfor %}
+                                  </div>
+                                  <div class="plant-group__subtotal" id="subtotal-{{ value | handle }}">
+                                    小計: 0本
+                                  </div>
+                                </div>
+                              {% endfor %}
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+<div class="option-section">
+                          <h3 class="option-title">年齢層</h3>
+                          <div class="option-group age-group">
+                            {% assign age_tags = "0~6か月|1~2歳|6~12か月|キッズ|トドラー|ユニバーサル|全年齢|十代|成人|新生|赤ちゃん|その他" | split: "|" %}
+                            {% for age in age_tags %}
+                              <div class="option-value age-option">
+                                <div class="option-checkbox">
+                                  <input type="checkbox" 
+                                    id="age-{{ age | handle }}"
+                                    name="properties[年齢層][]" 
+                                    value="{{ age }}"
+                                    class="age-selector">
+                                  <label for="age-{{ age | handle }}">{{ age }}</label>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          </div>
+                        </div>
+
+                        <div class="quantity-summary">
+                          <div class="total-quantity">
+                            <span>合計数量: </span>
+                            <span id="total-quantity">0</span>
+                            <span>本</span>
+                            <div class="total-price">
+                              合計金額: <span id="total-price">¥0</span>
+                            </div>
+                          </div>
+                          <div class="button-group">
+                            <button type="submit" id="flower-add-to-cart" class="button" disabled>
+                              カートに追加
+                            </button>
+                            <button type="button" id="inquiry-button" class="button button--secondary" onclick="openInquiryModal()" disabled>
+                              この内容で問い合わせる
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                {% else %}
+                  {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+                {% endif %}
+              
+              {%- when 'buy_buttons' -%}
+                {% unless product.product_type == '花束' or product.tags contains '花束' %}
+                  {%- render 'buy-buttons',
+                    block: block,
+                    product: product,
+                    product_form_id: product_form_id,
+                    section_id: section.id,
+                    show_pickup_availability: true
+                  -%}
+                {% endunless %}
+
+              {%- when 'description' -%}
+                {%- if product.description != blank -%}
+                  <div class="product__description rte">
+                    {{ product.description }}
+                  </div>
+                {%- endif -%}
+
+              {%- when 'share' -%}
+                {% render 'share-button', share_link: product.url, block: block %}
+
+              {%- when 'custom_liquid' -%}
+                {{ block.settings.custom_liquid }}
+
+              {%- else -%}
+                {%- render block -%}
+            {%- endcase -%}
+          {%- endfor -%}
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- 問い合わせモーダル -->
+  <div id="inquiry-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeInquiryModal()">&times;</span>
+      <h2>商品についての問い合わせ</h2>
+      <div id="selected-items-summary"></div>
+      <form id="inquiry-form" class="inquiry-form" action="/contact#contact_form" method="post">
+        {%- assign formId = 'contact' -%}
+        <input type="hidden" name="form_type" value="contact">
+        <input type="hidden" name="utf8" value="✓">
+        
+        <div class="form-group">
+          <label for="ContactFormName">お名前 <span class="required">*</span></label>
+          <input type="text" id="ContactFormName" name="contact[name]" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="ContactFormEmail">メールアドレス <span class="required">*</span></label>
+          <input type="email" id="ContactFormEmail" name="contact[email]" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="ContactFormPhone">電話番号</label>
+          <input type="tel" id="ContactFormPhone" name="contact[phone]">
+        </div>
+        
+        <div class="form-group">
+          <input type="hidden" id="ContactFormMessage" name="contact[body]">
+          <label for="ContactFormCustomMessage">お問い合わせ内容 <span class="required">*</span></label>
+          <textarea id="ContactFormCustomMessage" rows="5" required></textarea>
+        </div>
+        
+        <button type="submit" class="button">送信する</button>
+      </form>
+    </div>
+  </div>
+</product-info>
+
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('flower-custom-form');
+  const totalQuantityElement = document.getElementById('total-quantity');
+  const totalPriceElement = document.getElementById('total-price');
+  
+  if (!form) return;
+
+  // グループごとの小計を更新
+  function updateSubtotal(plantGroup) {
+    const groupName = plantGroup.dataset.plant;
+    const subtotalElement = document.getElementById(`subtotal-${groupName.toLowerCase().replace(/\s+/g, '-')}`);
+    const checkboxes = plantGroup.querySelectorAll('.variant-selector');
+    let totalQty = 0;
+    let totalPrice = 0;
+
+    checkboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        const quantityInput = document.getElementById(`qty-${checkbox.dataset.variantId}`);
+        const quantity = parseInt(quantityInput.value) || 0;
+        const price = parseFloat(checkbox.dataset.price) || 0;
+        totalQty += quantity;
+        totalPrice += quantity * price;
+      }
+    });
+
+    if (subtotalElement) {
+      subtotalElement.textContent = `小計: ${totalQty}本 (¥${totalPrice.toLocaleString()})`;
+    }
+  }
+
+  // 合計を更新
+  function updateTotals() {
+    let totalQty = 0;
+    let totalPrice = 0;
+    
+    form.querySelectorAll('.variant-selector:checked').forEach(checkbox => {
+      const quantityInput = document.getElementById(`qty-${checkbox.dataset.variantId}`);
+      if (quantityInput && !quantityInput.disabled) {
+        const quantity = parseInt(quantityInput.value) || 0;
+        const price = parseFloat(checkbox.dataset.price) || 0;
+        totalQty += quantity;
+        totalPrice += quantity * price;
+      }
+    });
+    
+    totalQuantityElement.textContent = totalQty;
+    totalPriceElement.textContent = `¥${totalPrice.toLocaleString()}`;
+
+    // ボタンの有効/無効を切り替え
+    const submitButton = form.querySelector('#flower-add-to-cart');
+    const inquiryButton = document.getElementById('inquiry-button');
+    const isDisabled = totalQty === 0;
+    
+    if (submitButton) submitButton.disabled = isDisabled;
+    if (inquiryButton) inquiryButton.disabled = isDisabled;
+
+    // 各グループの小計を更新
+    document.querySelectorAll('.plant-group').forEach(updateSubtotal);
+  }
+
+  // チェックボックスと数量入力の連動
+  form.querySelectorAll('.variant-selector').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      const quantityInput = document.getElementById(`qty-${this.dataset.variantId}`);
+      if (quantityInput) {
+        quantityInput.disabled = !this.checked;
+        if (!this.checked) {
+          quantityInput.value = 1;
+        }
+        updateTotals();
+      }
+    });
+  });
+
+  // 数量変更時の更新
+  form.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('change', function() {
+      if (this.value < 1) this.value = 1;
+      updateTotals();
+    });
+    input.addEventListener('input', updateTotals);
+  });
+
+  // カート追加処理
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const items = [];
+    const selectedVariants = new Map();
+    
+    // 選択された商品の情報を収集
+    this.querySelectorAll('.variant-selector:checked').forEach(checkbox => {
+      const variantId = checkbox.dataset.variantId;
+      const quantityInput = document.getElementById(`qty-${variantId}`);
+      if (quantityInput && !quantityInput.disabled) {
+        const quantity = parseInt(quantityInput.value) || 0;
+        if (quantity > 0) {
+          items.push({
+            id: parseInt(variantId),
+            quantity: quantity,
+            properties: {
+              '植物': checkbox.dataset.plant,
+              '色': checkbox.dataset.color
+            }
+          });
+        }
+      }
+    });
+
+    // 年齢層の選択を収集
+    const selectedAges = Array.from(form.querySelectorAll('.age-selector:checked'))
+      .map(input => input.value)
+      .join(', ');
+
+    // 年齢層が選択されている場合、各アイテムにプロパティとして追加
+    if (selectedAges) {
+      items.forEach(item => {
+        item.properties['年齢層'] = selectedAges;
+      });
+    }
+
+    if (items.length > 0) {
+      // カートに追加
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ items })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (!data.status) {
+          alert('カートに追加しました');
+          window.location.href = '/cart';
+        } else {
+          alert(data.description || 'カートに追加できませんでした');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('エラーが発生しました');
+      });
+    } else {
+      alert('商品を選択してください');
+    }
+  });
+});
+
+// モーダル関連の機能
+function openInquiryModal() {
+  const modal = document.getElementById('inquiry-modal');
+  const summary = document.getElementById('selected-items-summary');
+  
+  // 選択内容の取得とグループ化
+  const selectedItems = new Map();
+  document.querySelectorAll('.variant-selector:checked').forEach(checkbox => {
+    const plantName = checkbox.dataset.plant;
+    const quantityInput = document.getElementById(`qty-${checkbox.dataset.variantId}`);
+    if (quantityInput && !quantityInput.disabled) {
+      if (!selectedItems.has(plantName)) {
+        selectedItems.set(plantName, []);
+      }
+      selectedItems.get(plantName).push({
+        color: checkbox.dataset.color,
+        quantity: parseInt(quantityInput.value) || 0
+      });
+    }
+  });
+
+  // 年齢層の選択を取得
+  const selectedAges = Array.from(document.querySelectorAll('.age-selector:checked'))
+    .map(input => input.value)
+    .join(', ');
+
+  // サマリーの作成
+  let summaryHtml = `<p><strong>商品名:</strong> ${document.querySelector('h1').textContent}</p>`;
+  
+  selectedItems.forEach((items, plantName) => {
+    summaryHtml += `
+      <p><strong>${plantName}:</strong></p>
+      <ul>
+        ${items.map(item => `<li>${item.color}: ${item.quantity}本</li>`).join('')}
+      </ul>
+    `;
+  });
+
+  if (selectedAges) {
+    summaryHtml += `<p><strong>年齢層:</strong> ${selectedAges}</p>`;
+  }
+
+  summaryHtml += `
+    <p><strong>合計数量:</strong> ${document.getElementById('total-quantity').textContent}本</p>
+    <p><strong>合計金額:</strong> ${document.getElementById('total-price').textContent}</p>
+  `;
+  
+  summary.innerHTML = summaryHtml;
+  modal.style.display = 'block';
+}
+
+function closeInquiryModal() {
+  document.getElementById('inquiry-modal').style.display = 'none';
+}
+
+// 問い合わせフォーム送信処理
+document.getElementById('inquiry-form')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // 選択内容の取得とグループ化
+  const selectedItems = new Map();
+  document.querySelectorAll('.variant-selector:checked').forEach(checkbox => {
+    const plantName = checkbox.dataset.plant;
+    const quantityInput = document.getElementById(`qty-${checkbox.dataset.variantId}`);
+    if (quantityInput && !quantityInput.disabled) {
+      if (!selectedItems.has(plantName)) {
+        selectedItems.set(plantName, []);
+      }
+      selectedItems.get(plantName).push({
+        color: checkbox.dataset.color,
+        quantity: parseInt(quantityInput.value) || 0
+      });
+    }
+  });
+
+  // 年齢層の選択を取得
+  const selectedAges = Array.from(document.querySelectorAll('.age-selector:checked'))
+    .map(input => input.value)
+    .join(', ');
+
+  // メッセージの作成
+  let messageContent = `
+商品名: ${document.querySelector('h1').textContent}
+
+選択内容:`;
+
+  selectedItems.forEach((items, plantName) => {
+    messageContent += `\n\n${plantName}:`;
+    items.forEach(item => {
+      messageContent += `\n- ${item.color}: ${item.quantity}本`;
+    });
+  });
+
+  if (selectedAges) {
+    messageContent += `\n\n年齢層: ${selectedAges}`;
+  }
+
+  messageContent += `\n\n合計数量: ${document.getElementById('total-quantity').textContent}本`;
+  messageContent += `\n合計金額: ${document.getElementById('total-price').textContent}`;
+  messageContent += `\n\n問い合わせ内容:\n${document.getElementById('ContactFormCustomMessage').value}`;
+
+  // hidden inputにメッセージを設定
+  document.getElementById('ContactFormMessage').value = messageContent;
+
+  // フォームを送信
+  this.submit();
+});
+
+// モーダルの外側をクリックした時に閉じる
+window.onclick = function(event) {
+  const modal = document.getElementById('inquiry-modal');
+  if (event.target == modal) {
+    closeInquiryModal();
+  }
+}
+</script>
+
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "section",
+  "class": "section",
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "default": "Text block",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "title",
+      "name": "Product title",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1
+    },
+    {
+      "type": "share",
+      "name": "Share buttons",
+      "limit": 1
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom liquid"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "media_size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "large",
+      "label": "Media size"
+    },
+    {
+      "type": "select",
+      "id": "media_position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left",
+      "label": "Media position"
+    },
+    {
+      "type": "select",
+      "id": "gallery_layout",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        },
+        {
+          "value": "thumbnail",
+          "label": "Thumbnail"
+        }
+      ],
+      "default": "stacked",
+      "label": "Gallery layout"
+    }
+  ]
+}
+{% endschema %}

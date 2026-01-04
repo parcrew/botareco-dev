@@ -1,0 +1,1120 @@
+<style>
+/* ================================================================
+   2段階エリア選択対応CSS
+   ================================================================ */
+
+/* 既存のヘッダー・カレンダーCSS（変更なし） */
+.ev-header-sty {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 0;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.ev-left-column {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.this-week {
+  background: #4A90E2;
+  color: white;
+  padding: 10px 16px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 1.2;
+  text-align: center;
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  margin: 0;
+}
+
+.this-week:hover {
+  background: #357ABD;
+  text-decoration: none;
+  color: white;
+}
+
+.area-value {
+  background: #333;
+  color: white;
+  padding: 10px 16px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  transition: background-color 0.2s ease;
+}
+
+.area-value:hover {
+  background: #555;
+}
+
+.ev-right-column {
+  flex: 1;
+  overflow: hidden;
+}
+
+.date-scroll {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding: 8px 16px;
+  gap: 2px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.date-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.month-indicator {
+  background: linear-gradient(135deg, #8E44AD, #9B59B6);
+  color: white;
+  padding: 12px 14px;
+  font-weight: bold;
+  font-size: 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border-radius: 0;
+  text-align: center;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.date-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  min-width: 48px;
+  height: 48px;
+  border: none;
+  background: #f5f5f5;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 10px;
+  flex-shrink: 0;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.date-btn:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.date-btn.active {
+  background: #333;
+  color: white;
+  font-weight: bold;
+}
+
+.date-btn.has-events {
+  background: #e8f4f8;
+  border: 1px solid #4A90E2;
+  color: #4A90E2;
+}
+
+.date-btn.has-events:hover {
+  background: #4A90E2;
+  color: white;
+}
+
+.date-btn.has-events.active {
+  background: #333;
+  color: white;
+  border-color: #333;
+}
+
+.date-btn.no-events {
+  opacity: 0.7;
+  background: #f9f9f9;
+  color: #999;
+}
+
+.date-btn.no-events:hover {
+  opacity: 0.9;
+  background: #f0f0f0;
+}
+
+.date-yobi {
+  font-size: 8px;
+  font-weight: 500;
+  margin-bottom: 2px;
+  opacity: 0.8;
+}
+
+.date-day {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.date-mt {
+  font-size: 7px;
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+/* メインコンテンツのマージン調整 */
+.events-main-content {
+  margin-top: 80px;
+  padding-top: 20px;
+}
+
+/* ================================================================
+   2段階エリア選択ポップアップCSS
+   ================================================================ */
+
+/* ポップアップ背景（全画面オーバーレイ） */
+.area-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* 背景オーバーレイ（薄い透明灰色） */
+.popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+/* ポップアップコンテンツ */
+.popup-content {
+  position: relative;
+  background: #f4f3ff;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  min-width: 480px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 1101;
+}
+
+/* メニュー画面共通 */
+.menu-screen {
+  padding: 40px;
+}
+
+/* 閉じるボタン */
+.popup-close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+  color: #666;
+  line-height: 1;
+  padding: 0;
+  z-index: 1102;
+}
+
+.popup-close:hover {
+  color: #333;
+}
+
+/* 戻るボタン */
+.back-button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #8E44AD;
+  cursor: pointer;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.back-button:hover {
+  color: #7D3C98;
+}
+
+/* セクションタイトル */
+.section-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 20px 0;
+  text-align: left;
+}
+
+/* 詳細画面タイトル */
+.detail-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 30px 0;
+  text-align: left;
+  border-bottom: 2px solid #8E44AD;
+  padding-bottom: 10px;
+}
+
+/* POPULAR AREA セクション */
+.popular-section {
+  margin-bottom: 40px;
+}
+
+.popular-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.popular-option {
+  background: linear-gradient(135deg, #8E44AD, #9B59B6);
+  color: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(142, 68, 173, 0.3);
+}
+
+.popular-option:hover {
+  background: linear-gradient(135deg, #7D3C98, #8E44AD);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(142, 68, 173, 0.4);
+  text-decoration: none;
+  color: white;
+}
+
+/* SELECT AREA セクション */
+.select-section {
+  margin-bottom: 20px;
+}
+
+/* ALL EVENT ボタン */
+.all-event-option {
+  display: block;
+  background: linear-gradient(135deg, #C8B5E6, #D7C4ED);
+  color: #5A4FCF;
+  padding: 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 12px rgba(200, 181, 230, 0.4);
+  border: 2px solid rgba(90, 79, 207, 0.2);
+}
+
+.all-event-option:hover {
+  background: linear-gradient(135deg, #B8A1DF, #C8B5E6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 181, 230, 0.6);
+  text-decoration: none;
+  color: #5A4FCF;
+}
+
+/* 地方選択オプション */
+.region-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.region-option {
+  background: linear-gradient(135deg, #C8B5E6, #D7C4ED);
+  color: #5A4FCF;
+  padding: 16px 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(200, 181, 230, 0.3);
+}
+
+.region-option:hover {
+  background: linear-gradient(135deg, #B8A1DF, #C8B5E6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(200, 181, 230, 0.5);
+}
+
+/* 詳細画面の ALL 地域ボタン */
+.all-region-option {
+  display: block;
+  background: linear-gradient(135deg, #C8B5E6, #D7C4ED);
+  color: #5A4FCF;
+  padding: 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 12px rgba(200, 181, 230, 0.4);
+  border: 2px solid rgba(90, 79, 207, 0.2);
+}
+
+.all-region-option:hover {
+  background: linear-gradient(135deg, #B8A1DF, #C8B5E6);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 181, 230, 0.6);
+  text-decoration: none;
+  color: #5A4FCF;
+}
+
+/* 詳細地域オプション */
+.detail-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.detail-area-option {
+  background: linear-gradient(135deg, #C8B5E6, #D7C4ED);
+  color: #5A4FCF;
+  padding: 16px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(200, 181, 230, 0.3);
+  display: block;
+}
+
+.detail-area-option:hover {
+  background: linear-gradient(135deg, #B8A1DF, #C8B5E6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(200, 181, 230, 0.5);
+  text-decoration: none;
+  color: #5A4FCF;
+}
+
+/* パンくずナビ */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #666;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.breadcrumb-link {
+  color: #4A90E2;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.breadcrumb-link:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  margin: 0 8px;
+  color: #999;
+}
+
+.breadcrumb-current {
+  color: #333;
+  font-weight: 600;
+}
+
+/* 日別ページ用の前後日ナビゲーション */
+.day-navigation {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  gap: 20px;
+  z-index: 1001;
+}
+
+.prev-day, .next-day {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: #4A90E2;
+  color: white;
+  text-decoration: none;
+  border-radius: 15px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.prev-day:hover, .next-day:hover {
+  background: #357ABD;
+  text-decoration: none;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.current-day {
+  font-weight: bold;
+  color: #333;
+  font-size: 16px;
+  padding: 8px 16px;
+  background: white;
+  border-radius: 15px;
+  border: 2px solid #4A90E2;
+  white-space: nowrap;
+}
+
+/* その他の既存スタイル */
+.back-to-month {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  background: #4A90E2;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 12px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.back-to-month:hover {
+  background: #357ABD;
+  color: white;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.events-loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4A90E2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.events-footer-message {
+  margin-top: 40px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-align: center;
+  color: #555;
+  border-left: 4px solid #4A90E2;
+}
+
+.events-footer-message a {
+  color: #4A90E2;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.day-page-info {
+  margin-bottom: 32px;
+}
+
+.day-info-card {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.day-info-card h2 {
+  color: #333;
+  margin-bottom: 12px;
+  font-size: 1.5rem;
+}
+
+.day-info-card p {
+  color: #666;
+  margin: 0;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0;
+  }
+  
+  .this-week {
+    min-width: 50px;
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  
+  .area-value {
+    min-width: 70px;
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  
+  .date-scroll {
+    padding: 6px 12px;
+  }
+  
+  .date-btn {
+    min-width: 42px;
+    height: 42px;
+    padding: 6px;
+  }
+  
+  .date-day {
+    font-size: 14px;
+  }
+  
+  .month-indicator {
+    padding: 10px 12px;
+    font-size: 10px;
+    min-height: 42px;
+  }
+  
+  .events-main-content {
+    margin-top: 70px;
+  }
+  
+  /* ポップアップのモバイル対応 */
+  .popup-content {
+    min-width: auto;
+    margin: 10px;
+    max-height: 90vh;
+  }
+  
+  .menu-screen {
+    padding: 30px 20px;
+  }
+  
+  .popular-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .region-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .detail-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .popular-option {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+  
+  .region-option, .detail-area-option {
+    padding: 14px 10px;
+    font-size: 12px;
+  }
+  
+  .all-event-option, .all-region-option {
+    padding: 16px;
+    font-size: 16px;
+  }
+  
+  .day-navigation {
+    padding: 10px 16px;
+    gap: 16px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+  }
+  
+  .prev-day, .next-day {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-width: 70px;
+  }
+  
+  .current-day {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+}
+</style>
+{% comment %}
+  Template: event-list.liquid（改良版エリア選択対応）
+  機能: 既存デザイン + 2段階エリア選択ポップアップ
+{% endcomment %}
+
+{% comment %}=== URL解析とパラメータ抽出（既存と同じ） ==={% endcomment %}
+{% assign current_path = request.path %}
+{% assign region_code = 'ALL' %}
+{% assign region_name_jp = '全国' %}
+{% assign year_month = '' %}
+{% assign year_month_day = '' %}
+{% assign display_year = '' %}
+{% assign display_month = '' %}
+{% assign display_day = '' %}
+{% assign display_month_name = '' %}
+{% assign page_type = 'top' %}
+
+{% comment %}地域判定{% endcomment %}
+{% if current_path contains 'event-tokyo-list' %}
+  {% assign region_code = 'TOKYO' %}
+  {% assign region_name_jp = '東京' %}
+{% elsif current_path contains 'event-osaka-list' %}
+  {% assign region_code = 'OSAKA' %}
+  {% assign region_name_jp = '大阪' %}
+{% elsif current_path contains 'event-kyoto-list' %}
+  {% assign region_code = 'KYOTO' %}
+  {% assign region_name_jp = '京都' %}
+{% elsif current_path contains 'event-aichi-list' %}
+  {% assign region_code = 'AICHI' %}
+  {% assign region_name_jp = '愛知' %}
+{% elsif current_path contains 'event-fukuoka-list' %}
+  {% assign region_code = 'FUKUOKA' %}
+  {% assign region_name_jp = '福岡' %}
+{% elsif current_path contains 'event-hokkaido-list' %}
+  {% assign region_code = 'HOKKAIDO' %}
+  {% assign region_name_jp = '北海道' %}
+{% endif %}
+
+{% comment %}日付抽出{% endcomment %}
+{% assign url_parts = current_path | split: 'list-' %}
+{% if url_parts.size > 1 %}
+  {% assign date_part = url_parts[1] %}
+  {% assign date_segments = date_part | split: '-' %}
+  
+  {% if date_segments.size == 3 %}
+    {% assign year_month_day = date_part %}
+    {% assign year_month = date_segments[0] | append: '-' | append: date_segments[1] %}
+    {% assign display_year = date_segments[0] %}
+    {% assign display_month = date_segments[1] %}
+    {% assign display_day = date_segments[2] %}
+    {% assign page_type = 'day' %}
+  {% elsif date_segments.size == 2 %}
+    {% assign year_month = date_part %}
+    {% assign display_year = date_segments[0] %}
+    {% assign display_month = date_segments[1] %}
+    {% assign page_type = 'month' %}
+  {% endif %}
+{% endif %}
+
+{% comment %}月名変換{% endcomment %}
+{% if display_month != '' %}
+  {% case display_month %}
+    {% when '01' %}{% assign display_month_name = '1月' %}
+    {% when '02' %}{% assign display_month_name = '2月' %}
+    {% when '03' %}{% assign display_month_name = '3月' %}
+    {% when '04' %}{% assign display_month_name = '4月' %}
+    {% when '05' %}{% assign display_month_name = '5月' %}
+    {% when '06' %}{% assign display_month_name = '6月' %}
+    {% when '07' %}{% assign display_month_name = '7月' %}
+    {% when '08' %}{% assign display_month_name = '8月' %}
+    {% when '09' %}{% assign display_month_name = '9月' %}
+    {% when '10' %}{% assign display_month_name = '10月' %}
+    {% when '11' %}{% assign display_month_name = '11月' %}
+    {% when '12' %}{% assign display_month_name = '12月' %}
+  {% endcase %}
+{% endif %}
+
+<div class="page-width">
+  
+  <!-- 既存デザインのヘッダー構造（Fixed対応） -->
+  <header class="ev-header-sty" data-current-area="{{ region_code }}">
+    <div class="header-container">
+      
+      <!-- 左カラム: ALL EVENT + エリア選択 -->
+      <div class="ev-left-column">
+        <a href="/blogs/news/event-list" class="this-week">
+          ALL<br>EVENT
+        </a>
+        <div class="area-value" onclick="openAreaPopup()">
+          <span id="selected-area">{{ region_code }}</span>
+        </div>
+      </div>
+      
+      <!-- 右カラム: カレンダー -->
+      <div class="ev-right-column">
+        <div class="date-scroll" id="date-scroll">
+          <!-- JavaScriptがカレンダーを生成 -->
+        </div>
+      </div>
+      
+    </div>
+  </header>
+
+  <!-- パンくずナビ（ヘッダー外） -->
+  {% if page_type != 'top' %}
+  <nav class="breadcrumb">
+    <a href="/blogs/news/event-list" class="breadcrumb-link">イベント一覧トップ</a>
+    
+    {% if region_code != 'ALL' %}
+      <span class="breadcrumb-separator"> > </span>
+      <a href="/blogs/news/event-{{ region_code | downcase }}-list" class="breadcrumb-link">{{ region_name_jp }}イベント一覧</a>
+    {% endif %}
+    
+    {% if page_type == 'month' %}
+      <span class="breadcrumb-separator"> > </span>
+      <span class="breadcrumb-current">{{ display_year }}年{{ display_month_name }}</span>
+    {% elsif page_type == 'day' %}
+      <span class="breadcrumb-separator"> > </span>
+      {% if region_code == 'ALL' %}
+        <a href="/blogs/news/event-list-{{ year_month }}" class="breadcrumb-link">{{ display_year }}年{{ display_month_name }}</a>
+      {% else %}
+        <a href="/blogs/news/event-{{ region_code | downcase }}-list-{{ year_month }}" class="breadcrumb-link">{{ display_year }}年{{ display_month_name }}</a>
+      {% endif %}
+      <span class="breadcrumb-separator"> > </span>
+      {% assign display_day_clean = display_day | plus: 0 %}
+      <span class="breadcrumb-current">{{ display_month_name }}{{ display_day_clean }}日</span>
+    {% endif %}
+  </nav>
+  {% endif %}
+
+  <!-- メインコンテンツエリア -->
+  <main class="events-main-content">
+    
+    <!-- 日別ページ専用メッセージ -->
+    {% if page_type == 'day' %}
+    <div class="day-page-info">
+      <div class="day-info-card">
+        {% assign display_day_clean = display_day | plus: 0 %}
+        <h2>📅 {{ region_name_jp }} {{ display_year }}年{{ display_month_name }}{{ display_day_clean }}日のイベント情報</h2>
+        <p>この日に{{ region_name_jp }}で開催される植物イベントを表示しています。</p>
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- イベントコンテナ -->
+    <div id="event-container" 
+         data-region="{{ region_code }}"
+         {% if page_type == 'month' %}data-month="{{ year_month }}"{% endif %}
+         {% if page_type == 'day' %}data-day="{{ year_month_day }}"{% endif %}
+         class="events-container">
+      
+      <!-- 初期ローディング表示 -->
+      <div class="events-loading">
+        <div class="loading-spinner"></div>
+        <p>{{ region_name_jp }}のイベント情報を読み込んでいます...</p>
+      </div>
+      
+    </div>
+
+    <!-- フッターメッセージ -->
+    <div class="events-footer-message">
+      <p>
+        {% if page_type == 'day' %}
+          {{ region_name_jp }}の{{ display_year }}年{{ display_month_name }}{{ display_day_clean }}日の全てのイベント情報を表示しています。<br>
+          {% if region_code == 'ALL' %}
+            <a href="/blogs/news/event-list-{{ year_month }}">{{ display_year }}年{{ display_month_name }}の一覧</a>や
+            <a href="/blogs/news/event-list">イベント一覧トップ</a>もご覧ください。
+          {% else %}
+            <a href="/blogs/news/event-{{ region_code | downcase }}-list-{{ year_month }}">{{ region_name_jp }}の{{ display_year }}年{{ display_month_name }}の一覧</a>や
+            <a href="/blogs/news/event-{{ region_code | downcase }}-list">{{ region_name_jp }}イベント一覧</a>もご覧ください。
+          {% endif %}
+        {% elsif page_type == 'month' %}
+          {{ region_name_jp }}の{{ display_year }}年{{ display_month_name }}の全てのイベント情報を表示しています。
+          {% if region_code == 'ALL' %}
+            他の月のイベントは<a href="/blogs/news/event-list">イベント一覧トップ</a>からご覧ください。
+          {% else %}
+            他の月のイベントは<a href="/blogs/news/event-{{ region_code | downcase }}-list">{{ region_name_jp }}イベント一覧</a>からご覧ください。
+          {% endif %}
+        {% else %}
+          より多くのイベント情報は、各月の詳細ページでご覧いただけます。
+        {% endif %}
+      </p>
+    </div>
+    
+  </main>
+  
+</div>
+
+<!-- 2段階エリア選択ポップアップ -->
+<div id="area-popup" class="area-popup" style="display: none;">
+  <div class="popup-overlay"></div>
+  <div class="popup-content">
+    
+    <!-- メインメニュー -->
+    <div id="main-menu" class="menu-screen">
+      <button onclick="closeAreaPopup()" class="popup-close">×</button>
+      
+      <!-- POPULAR AREA セクション -->
+      <div class="popular-section">
+        <h3 class="section-title">POPULAR AREA</h3>
+        <div class="popular-options">
+          <a href="/blogs/news/event-tokyo-list" class="popular-option">TOKYO</a>
+          <a href="/blogs/news/event-osaka-list" class="popular-option">OSAKA</a>
+          <a href="/blogs/news/event-kyoto-list" class="popular-option">KYOTO</a>
+          <a href="/blogs/news/event-aichi-list" class="popular-option">NAGOYA</a>
+          <a href="/blogs/news/event-fukuoka-list" class="popular-option">FUKUOKA</a>
+        </div>
+      </div>
+      
+      <!-- SELECT AREA セクション -->
+      <div class="select-section">
+        <h3 class="section-title">SELECT AREA</h3>
+        
+        <!-- ALL EVENT -->
+        <a href="/blogs/news/event-list" class="all-event-option">ALL EVENT</a>
+        
+        <!-- 地方選択 -->
+        <div class="region-options">
+          <button onclick="showRegionDetail('hokkaido')" class="region-option" data-region="hokkaido">Hokkaido</button>
+          <button onclick="showRegionDetail('tohoku')" class="region-option" data-region="tohoku">Tohoku</button>
+          <button onclick="showRegionDetail('kanto')" class="region-option" data-region="kanto">Kanto</button>
+          <button onclick="showRegionDetail('chubu')" class="region-option" data-region="chubu">Chubu</button>
+          <button onclick="showRegionDetail('kansai')" class="region-option" data-region="kansai">Kansai</button>
+          <button onclick="showRegionDetail('shikoku')" class="region-option" data-region="shikoku">Shikoku</button>
+          <button onclick="showRegionDetail('chugoku')" class="region-option" data-region="chugoku">Chugoku</button>
+          <button onclick="showRegionDetail('kyushu')" class="region-option" data-region="kyushu">Kyushu</button>
+          <button onclick="showRegionDetail('okinawa')" class="region-option" data-region="okinawa">Okinawa</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 詳細メニュー -->
+    <div id="detail-menu" class="menu-screen" style="display: none;">
+      <button onclick="showMainMenu()" class="back-button">← Back to menu</button>
+      <button onclick="closeAreaPopup()" class="popup-close">×</button>
+      
+      <h3 id="detail-title" class="detail-title">HOKKAIDO</h3>
+      
+      <!-- ALL 地域 ボタン -->
+      <a id="all-region-link" href="#" class="all-region-option">ALL HOKKAIDO</a>
+      
+      <!-- 詳細地域オプション -->
+      <div id="detail-options" class="detail-options">
+        <!-- JavaScriptで動的に生成 -->
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- JavaScriptファイルの読み込み -->
+{{ 'events-list.js' | asset_url | script_tag }}
+
+<!-- CSSファイルの読み込み -->
+{{ 'events-list.css' | asset_url | stylesheet_tag }}
+
+<script>
+// 地域データ定義
+const regionData = {
+  hokkaido: {
+    title: 'HOKKAIDO',
+    allLink: '/blogs/news/event-hokkaido-list',
+    areas: [
+      { name: 'DOUO', link: '/blogs/news/event-douo-list' },
+      { name: 'TOKACHI', link: '/blogs/news/event-tokachi-list' },
+      { name: 'DONAN', link: '/blogs/news/event-donan-list' },
+      { name: 'OKHOTSK', link: '/blogs/news/event-okhotsk-list' },
+      { name: 'DOHOKU', link: '/blogs/news/event-dohoku-list' },
+      { name: 'KUSHIRO/NEMURO', link: '/blogs/news/event-kushiro-list' }
+    ]
+  },
+  tohoku: {
+    title: 'TOHOKU',
+    allLink: '/blogs/news/event-tohoku-list',
+    areas: [
+      { name: 'AOMORI', link: '/blogs/news/event-aomori-list' },
+      { name: 'IWATE', link: '/blogs/news/event-iwate-list' },
+      { name: 'MIYAGI', link: '/blogs/news/event-miyagi-list' },
+      { name: 'AKITA', link: '/blogs/news/event-akita-list' },
+      { name: 'YAMAGATA', link: '/blogs/news/event-yamagata-list' },
+      { name: 'FUKUSHIMA', link: '/blogs/news/event-fukushima-list' }
+    ]
+  },
+  kanto: {
+    title: 'KANTO',
+    allLink: '/blogs/news/event-kanto-list',
+    areas: [
+      { name: 'TOKYO', link: '/blogs/news/event-tokyo-list' },
+      { name: 'KANAGAWA', link: '/blogs/news/event-kanagawa-list' },
+      { name: 'CHIBA', link: '/blogs/news/event-chiba-list' },
+      { name: 'SAITAMA', link: '/blogs/news/event-saitama-list' },
+      { name: 'IBARAKI', link: '/blogs/news/event-ibaraki-list' },
+      { name: 'TOCHIGI', link: '/blogs/news/event-tochigi-list' },
+      { name: 'GUNMA', link: '/blogs/news/event-gunma-list' }
+    ]
+  },
+  chubu: {
+    title: 'CHUBU',
+    allLink: '/blogs/news/event-chubu-list',
+    areas: [
+      { name: 'AICHI', link: '/blogs/news/event-aichi-list' },
+      { name: 'SHIZUOKA', link: '/blogs/news/event-shizuoka-list' },
+      { name: 'GIFU', link: '/blogs/news/event-gifu-list' },
+      { name: 'NAGANO', link: '/blogs/news/event-nagano-list' },
+      { name: 'YAMANASHI', link: '/blogs/news/event-yamanashi-list' },
+      { name: 'NIIGATA', link: '/blogs/news/event-niigata-list' },
+      { name: 'TOYAMA', link: '/blogs/news/event-toyama-list' },
+      { name: 'ISHIKAWA', link: '/blogs/news/event-ishikawa-list' },
+      { name: 'FUKUI', link: '/blogs/news/event-fukui-list' }
+    ]
+  },
+  kansai: {
+    title: 'KANSAI',
+    allLink: '/blogs/news/event-kansai-list',
+    areas: [
+      { name: 'OSAKA', link: '/blogs/news/event-osaka-list' },
+      { name: 'KYOTO', link: '/blogs/news/event-kyoto-list' },
+      { name: 'HYOGO', link: '/blogs/news/event-hyogo-list' },
+      { name: 'NARA', link: '/blogs/news/event-nara-list' },
+      { name: 'SHIGA', link: '/blogs/news/event-shiga-list' },
+      { name: 'WAKAYAMA', link: '/blogs/news/event-wakayama-list' }
+    ]
+  },
+  shikoku: {
+    title: 'SHIKOKU',
+    allLink: '/blogs/news/event-shikoku-list',
+    areas: [
+      { name: 'TOKUSHIMA', link: '/blogs/news/event-tokushima-list' },
+      { name: 'KAGAWA', link: '/blogs/news/event-kagawa-list' },
+      { name: 'EHIME', link: '/blogs/news/event-ehime-list' },
+      { name: 'KOCHI', link: '/blogs/news/event-kochi-list' }
+    ]
+  },
+  chugoku: {
+    title: 'CHUGOKU',
+    allLink: '/blogs/news/event-chugoku-list',
+    areas: [
+      { name: 'HIROSHIMA', link: '/blogs/news/event-hiroshima-list' },
+      { name: 'OKAYAMA', link: '/blogs/news/event-okayama-list' },
+      { name: 'YAMAGUCHI', link: '/blogs/news/event-yamaguchi-list' },
+      { name: 'SHIMANE', link: '/blogs/news/event-shimane-list' },
+      { name: 'TOTTORI', link: '/blogs/news/event-tottori-list' }
+    ]
+  },
+  kyushu: {
+    title: 'KYUSHU',
+    allLink: '/blogs/news/event-kyushu-list',
+    areas: [
+      { name: 'FUKUOKA', link: '/blogs/news/event-fukuoka-list' },
+      { name: 'SAGA', link: '/blogs/news/event-saga-list' },
+      { name: 'NAGASAKI', link: '/blogs/news/event-nagasaki-list' },
+      { name: 'KUMAMOTO', link: '/blogs/news/event-kumamoto-list' },
+      { name: 'OITA', link: '/blogs/news/event-oita-list' },
+      { name: 'MIYAZAKI', link: '/blogs/news/event-miyazaki-list' },
+      { name: 'KAGOSHIMA', link: '/blogs/news/event-kagoshima-list' }
+    ]
+  },
+  okinawa: {
+    title: 'OKINAWA',
+    allLink: '/blogs/news/event-okinawa-list',
+    areas: [
+      { name: 'NAHA', link: '/blogs/news/event-naha-list' },
+      { name: 'OKINAWA MAIN', link: '/blogs/news/event-okinawa-main-list' },
+      { name: 'ISHIGAKI', link: '/blogs/news/event-ishigaki-list' }
+    ]
+  }
+};
+
+// ポップアップ関数
+function openAreaPopup() {
+  document.getElementById('area-popup').style.display = 'flex';
+  showMainMenu();
+}
+
+function closeAreaPopup() {
+  document.getElementById('area-popup').style.display = 'none';
+}
+
+function showMainMenu() {
+  document.getElementById('main-menu').style.display = 'block';
+  document.getElementById('detail-menu').style.display = 'none';
+}
+
+function showRegionDetail(regionKey) {
+  const region = regionData[regionKey];
+  if (!region) return;
+  
+  // タイトル更新
+  document.getElementById('detail-title').textContent = region.title;
+  
+  // ALL地域リンク更新
+  const allRegionLink = document.getElementById('all-region-link');
+  allRegionLink.href = region.allLink;
+  allRegionLink.textContent = `ALL ${region.title}`;
+  
+  // 詳細オプション生成
+  const detailOptions = document.getElementById('detail-options');
+  detailOptions.innerHTML = region.areas.map(area => 
+    `<a href="${area.link}" class="detail-area-option">${area.name}</a>`
+  ).join('');
+  
+  // 画面切り替え
+  document.getElementById('main-menu').style.display = 'none';
+  document.getElementById('detail-menu').style.display = 'block';
+}
+
+// ポップアップ外クリックで閉じる
+document.addEventListener('click', function(e) {
+  const popup = document.getElementById('area-popup');
+  if (e.target === popup || e.target.classList.contains('popup-overlay')) {
+    closeAreaPopup();
+  }
+});
+</script>

@@ -1,0 +1,532 @@
+{{ 'leaflabot-app.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'leaflabot-app.js' | asset_url }}" defer></script>
+<style>
+/* ========================================
+   プロフィール表示ページ
+   LIFE LABEL / POPEYE tone
+   ======================================== */
+
+.community-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* プロフィールヘッダー */
+.profile-header {
+  background: white;
+  border: 2px solid #111;
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 32px;
+  display: flex;
+  gap: 32px;
+}
+
+.profile-avatar {
+  flex-shrink: 0;
+}
+
+.profile-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #111;
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #111;
+}
+
+.profile-location {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+/* フォロー統計 */
+.profile-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+/* フォローボタン */
+.follow-button {
+  padding: 10px 24px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: white;
+  color: #111;
+  margin-bottom: 16px;
+}
+
+.follow-button:hover {
+  background: #111;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.follow-button.following {
+  background: #111;
+  color: white;
+}
+
+/* 活動タイプバッジ */
+.profile-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.type-badge {
+  padding: 6px 14px;
+  background: white;
+  border: 2px solid #111;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* 自己紹介 */
+.profile-bio {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #374151;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+}
+
+/* 店舗情報 */
+.shop-info {
+  background: #FAFAF3;
+  padding: 20px;
+  border: 2px solid #111;
+  border-radius: 16px;
+  margin-top: 20px;
+}
+
+.shop-info h4 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+}
+
+.shop-info p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+/* SNSリンク */
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.social-link {
+  padding: 8px 16px;
+  background: white;
+  border: 2px solid #111;
+  color: #111;
+  text-decoration: none;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+
+.social-link:hover {
+  background: #111;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* 地域イベントセクション（新規） */
+.regional-events-section {
+  margin: 32px 0;
+  padding: 24px;
+  background: #FAFAF3;
+  border: 2px solid #111;
+  border-radius: 16px;
+}
+
+.regional-events-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #111;
+}
+
+.regional-events-section a {
+  display: block;
+  padding: 14px;
+  background: white;
+  border: 2px solid #111;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #111;
+  margin-bottom: 12px;
+  transition: all 0.15s;
+}
+
+.regional-events-section a:hover {
+  transform: translateY(-2px);
+  background: #111;
+  color: white;
+}
+
+/* 投稿セクション */
+.posts-section {
+  background: white;
+  border: 2px solid #111;
+  border-radius: 16px;
+  padding: 32px;
+  margin-top: 32px;
+}
+
+.posts-section h3 {
+  margin-top: 0;
+  margin-bottom: 24px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #111;
+  border-bottom: 2px solid #111;
+  padding-bottom: 12px;
+}
+
+/* 投稿グリッド */
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.post-card {
+  border: 2px solid #111;
+  border-radius: 16px;
+  padding: 20px;
+  background: white;
+  transition: all 0.15s;
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 0 #111;
+}
+
+.post-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border: 2px solid #111;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.post-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.post-date {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+/* メッセージ */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 18px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #7f1d1d;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  border: 2px solid #dc2626;
+  font-weight: 600;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .community-container {
+    padding: 16px;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    padding: 24px;
+    gap: 20px;
+  }
+  
+  .profile-avatar {
+    text-align: center;
+  }
+  
+  .profile-stats {
+    justify-content: center;
+  }
+  
+  .posts-section {
+    padding: 20px;
+  }
+  
+  .posts-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .regional-events-section {
+    padding: 20px;
+  }
+}
+.btn-back-sns {
+  display: inline-block;
+  padding: 20px;
+  background: white;
+  color: #111; /* 文字色を黒に */
+  border: 2px solid #111;
+  border-radius: 16px;
+  transition: all 0.15s;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-back-sns:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 0 #111;
+}
+
+.btn-neo-style {
+  display: inline-block!important;
+  border: 2px solid #111!important;
+  border-radius: 16px!important;
+  padding: 20px!important;
+  background: white!important;
+  color: #111!important;
+  transition: all 0.15s!important;
+  cursor: pointer!important;
+  text-decoration: none!important;
+  font-size: 14px!important;
+  font-weight: bold!important;
+  box-sizing: border-box!important;
+  outline: none!important;
+}
+
+.btn-neo-style:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 0 #111;
+}
+
+button.btn-neo-style {
+  font-family: inherit;
+}
+
+/* ========================================
+   フォローモーダル
+   ======================================== */
+
+.follow-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.follow-modal {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #111;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.follow-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.follow-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #111;
+}
+
+.follow-modal-header .close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: color 0.2s;
+}
+
+.follow-modal-header .close-btn:hover {
+  color: #111;
+}
+
+.follow-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.follow-user-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+}
+
+.follow-user-item:hover {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.follow-user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #111;
+  flex-shrink: 0;
+}
+
+.follow-user-avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  border: 2px solid #111;
+  flex-shrink: 0;
+}
+
+.follow-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.follow-user-nickname {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 2px;
+  color: #111;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.follow-user-username {
+  font-size: 14px;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>
+
+{% render 'botareco-header' %}
+
+
+<div id="community-root" class="community-container">
+  <div class="loading">読み込み中...</div>
+</div>
+
+
+
+<div class="main-page-wide section-{{ section.id }}-padding">
+  <div class="rte{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    {{ page.content }}
+    
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  window.COMMUNITY_CONFIG = {
+    supabaseUrl: 'https://laixgcjvowdszrtdpxlq.supabase.co',
+    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxhaXhnY2p2b3dkc3pydGRweGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU2NTM5MTIsImV4cCI6MjA2MTIyOTkxMn0.yAvMili-p_uQMHYlz-fpErgFqX243J5z1zI87VqO63M',
+    currentUser: {{ customer.email | json }}
+  };
+</script>
+
+{{ 'community-page.js' | asset_url | script_tag }}
